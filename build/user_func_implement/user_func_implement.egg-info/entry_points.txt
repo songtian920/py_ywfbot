@@ -1,0 +1,3 @@
+[console_scripts]
+user_func_main = user_func_implement.user_func_main:main
+

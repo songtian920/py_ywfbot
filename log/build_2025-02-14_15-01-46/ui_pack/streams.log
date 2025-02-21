@@ -1,0 +1,25 @@
+[3.088s] Invoking command in '/home/st/py_ywfbot_ws/src/ui_pack': PYTHONPATH=/home/st/py_ywfbot_ws/build/ui_pack/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/ui_pack build --build-base /home/st/py_ywfbot_ws/build/ui_pack/build install --record /home/st/py_ywfbot_ws/build/ui_pack/install.log --single-version-externally-managed install_data
+[3.815s] running egg_info
+[3.816s] writing ../../build/ui_pack/ui_pack.egg-info/PKG-INFO
+[3.819s] writing dependency_links to ../../build/ui_pack/ui_pack.egg-info/dependency_links.txt
+[3.825s] writing entry points to ../../build/ui_pack/ui_pack.egg-info/entry_points.txt
+[3.825s] writing requirements to ../../build/ui_pack/ui_pack.egg-info/requires.txt
+[3.826s] writing top-level names to ../../build/ui_pack/ui_pack.egg-info/top_level.txt
+[3.827s] reading manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+[3.830s] adding license file 'LICENSE'
+[3.831s] writing manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+[3.832s] running build
+[3.833s] running build_py
+[3.833s] copying ui_pack/ui_main.py -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack
+[3.841s] running install
+[3.841s] running install_lib
+[3.846s] copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/ui_main.py -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack
+[3.848s] byte-compiling /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/ui_main.py to ui_main.cpython-310.pyc
+[3.851s] running install_data
+[3.851s] running install_egg_info
+[3.857s] removing '/home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack-0.0.0-py3.10.egg-info' (and everything under it)
+[3.860s] Copying ../../build/ui_pack/ui_pack.egg-info to /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack-0.0.0-py3.10.egg-info
+[3.861s] running install_scripts
+[3.923s] Installing ui_main script to /home/st/py_ywfbot_ws/install/ui_pack/lib/ui_pack
+[3.924s] writing list of installed files to '/home/st/py_ywfbot_ws/build/ui_pack/install.log'
+[3.981s] Invoked command in '/home/st/py_ywfbot_ws/src/ui_pack' returned '0': PYTHONPATH=/home/st/py_ywfbot_ws/build/ui_pack/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/ui_pack build --build-base /home/st/py_ywfbot_ws/build/ui_pack/build install --record /home/st/py_ywfbot_ws/build/ui_pack/install.log --single-version-externally-managed install_data

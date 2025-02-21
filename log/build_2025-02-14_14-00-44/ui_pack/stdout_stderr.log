@@ -1,0 +1,131 @@
+running egg_info
+creating ../../build/ui_pack/ui_pack.egg-info
+writing ../../build/ui_pack/ui_pack.egg-info/PKG-INFO
+writing dependency_links to ../../build/ui_pack/ui_pack.egg-info/dependency_links.txt
+writing entry points to ../../build/ui_pack/ui_pack.egg-info/entry_points.txt
+writing requirements to ../../build/ui_pack/ui_pack.egg-info/requires.txt
+writing top-level names to ../../build/ui_pack/ui_pack.egg-info/top_level.txt
+writing manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+reading manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/st/py_ywfbot_ws/build/ui_pack/build
+creating /home/st/py_ywfbot_ws/build/ui_pack/build/lib
+creating /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack
+copying ui_pack/__init__.py -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack
+copying ui_pack/components.py -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack
+copying ui_pack/临时测试.py -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack
+copying ui_pack/ui_main.py -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack
+copying ui_pack/GUI.py -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack
+creating /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+creating /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_restore.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_online.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/no_icon.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_heart.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_home.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_add_user.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_menu_close.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_attachment.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_invisible.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_search.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/active_menu.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_widgets.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_more_options.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_maximize.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_info.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_signal.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_file.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_folder_open.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_idle.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_folder.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_save.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_menu.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_settings.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_send.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_arrow_right.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_arrow_left.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_emoticons.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_minimize.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/robot.jpg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_close.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/svg_icons/icon_busy.svg -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons
+copying ui_pack/qml/RobotManual.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/RobotPointsTable.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/RobotToolTable.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/MyButtonText.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/Demo_VirtualKeyboard.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/RobotStatusDisp.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/MyButtonIcon.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/qml_main.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/MyButton.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+copying ui_pack/qml/RobotUserTable.qml -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml
+running install
+running install_lib
+creating /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/__init__.py -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/components.py -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/临时测试.py -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack
+creating /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/RobotManual.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/RobotPointsTable.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+creating /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_restore.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_online.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/no_icon.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_heart.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_home.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_add_user.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_menu_close.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_attachment.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_invisible.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_search.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/active_menu.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_widgets.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_more_options.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_maximize.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_info.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_signal.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_file.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_folder_open.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_idle.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_folder.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_save.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_menu.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_settings.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_send.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_arrow_right.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_arrow_left.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_emoticons.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_minimize.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/robot.jpg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_close.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/svg_icons/icon_busy.svg -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/svg_icons
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/RobotToolTable.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/MyButtonText.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/Demo_VirtualKeyboard.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/RobotStatusDisp.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/MyButtonIcon.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/qml_main.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/MyButton.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/qml/RobotUserTable.qml -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/ui_main.py -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/GUI.py -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack
+byte-compiling /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/components.py to components.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/临时测试.py to 临时测试.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/ui_main.py to ui_main.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/GUI.py to GUI.cpython-310.pyc
+running install_data
+creating /home/st/py_ywfbot_ws/install/ui_pack/share/ament_index
+creating /home/st/py_ywfbot_ws/install/ui_pack/share/ament_index/resource_index
+creating /home/st/py_ywfbot_ws/install/ui_pack/share/ament_index/resource_index/packages
+copying resource/ui_pack -> /home/st/py_ywfbot_ws/install/ui_pack/share/ament_index/resource_index/packages
+copying package.xml -> /home/st/py_ywfbot_ws/install/ui_pack/share/ui_pack
+running install_egg_info
+Copying ../../build/ui_pack/ui_pack.egg-info to /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack-0.0.0-py3.10.egg-info
+running install_scripts
+Installing ui_main script to /home/st/py_ywfbot_ws/install/ui_pack/lib/ui_pack
+writing list of installed files to '/home/st/py_ywfbot_ws/build/ui_pack/install.log'

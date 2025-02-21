@@ -1,0 +1,3 @@
+[console_scripts]
+ui_main = ui_pack.ui_main:main
+

@@ -1,0 +1,94 @@
+running egg_info
+creating ../../build/user_func_implement/user_func_implement.egg-info
+writing ../../build/user_func_implement/user_func_implement.egg-info/PKG-INFO
+writing dependency_links to ../../build/user_func_implement/user_func_implement.egg-info/dependency_links.txt
+writing entry points to ../../build/user_func_implement/user_func_implement.egg-info/entry_points.txt
+writing requirements to ../../build/user_func_implement/user_func_implement.egg-info/requires.txt
+writing top-level names to ../../build/user_func_implement/user_func_implement.egg-info/top_level.txt
+writing manifest file '../../build/user_func_implement/user_func_implement.egg-info/SOURCES.txt'
+reading manifest file '../../build/user_func_implement/user_func_implement.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file '../../build/user_func_implement/user_func_implement.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/st/py_ywfbot_ws/build/user_func_implement/build
+creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib
+creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement
+copying user_func_implement/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement
+creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera
+copying user_func_implement/camera/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera
+creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+copying user_func_implement/function/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+copying user_func_implement/function/func_tf2.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+copying user_func_implement/function/func_fr_ros2.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+copying user_func_implement/function/error_list.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+copying user_func_implement/function/fr_state_sub.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+copying user_func_implement/function/Func_moveit2.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+copying user_func_implement/function/createRobotTool.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+copying user_func_implement/sqlite/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+copying user_func_implement/sqlite/insert_pointData_script.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+copying user_func_implement/sqlite/get_pointList_script.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+copying user_func_implement/sqlite/createFRToolDatabaseScript.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+copying user_func_implement/sqlite/del_table_script.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+copying user_func_implement/sqlite/createFRPointsDatabaseScript.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+copying user_func_implement/sqlite/createFRUserDatabaseScript.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS
+copying user_func_implement/camera/MVS/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS
+copying user_func_implement/camera/MVS/Frame_draw.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS
+copying user_func_implement/sqlite/fr_data.db -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+running install
+running install_lib
+creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement
+creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera
+creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS/Frame_draw.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS
+creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/func_tf2.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/func_fr_ros2.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/error_list.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/fr_state_sub.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/Func_moveit2.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/createRobotTool.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/insert_pointData_script.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/fr_data.db -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/get_pointList_script.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/createFRToolDatabaseScript.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/del_table_script.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/createFRPointsDatabaseScript.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/createFRUserDatabaseScript.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS/Frame_draw.py to Frame_draw.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/func_tf2.py to func_tf2.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/func_fr_ros2.py to func_fr_ros2.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/error_list.py to error_list.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/fr_state_sub.py to fr_state_sub.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/Func_moveit2.py to Func_moveit2.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/createRobotTool.py to createRobotTool.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/insert_pointData_script.py to insert_pointData_script.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/get_pointList_script.py to get_pointList_script.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/createFRToolDatabaseScript.py to createFRToolDatabaseScript.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/del_table_script.py to del_table_script.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/createFRPointsDatabaseScript.py to createFRPointsDatabaseScript.cpython-310.pyc
+byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/createFRUserDatabaseScript.py to createFRUserDatabaseScript.cpython-310.pyc
+running install_data
+creating /home/st/py_ywfbot_ws/install/user_func_implement/share/ament_index
+creating /home/st/py_ywfbot_ws/install/user_func_implement/share/ament_index/resource_index
+creating /home/st/py_ywfbot_ws/install/user_func_implement/share/ament_index/resource_index/packages
+copying resource/user_func_implement -> /home/st/py_ywfbot_ws/install/user_func_implement/share/ament_index/resource_index/packages
+copying package.xml -> /home/st/py_ywfbot_ws/install/user_func_implement/share/user_func_implement
+running install_egg_info
+Copying ../../build/user_func_implement/user_func_implement.egg-info to /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement-0.0.0-py3.10.egg-info
+running install_scripts
+Installing user_func_main script to /home/st/py_ywfbot_ws/install/user_func_implement/lib/user_func_implement
+writing list of installed files to '/home/st/py_ywfbot_ws/build/user_func_implement/install.log'

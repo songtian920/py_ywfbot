@@ -1,0 +1,23 @@
+running egg_info
+writing ../../build/ui_pack/ui_pack.egg-info/PKG-INFO
+writing dependency_links to ../../build/ui_pack/ui_pack.egg-info/dependency_links.txt
+writing entry points to ../../build/ui_pack/ui_pack.egg-info/entry_points.txt
+writing requirements to ../../build/ui_pack/ui_pack.egg-info/requires.txt
+writing top-level names to ../../build/ui_pack/ui_pack.egg-info/top_level.txt
+reading manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+running build
+running build_py
+copying ui_pack/ui_main.py -> /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack
+running install
+running install_lib
+copying /home/st/py_ywfbot_ws/build/ui_pack/build/lib/ui_pack/ui_main.py -> /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack
+byte-compiling /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/ui_main.py to ui_main.cpython-310.pyc
+running install_data
+running install_egg_info
+removing '/home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack-0.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/ui_pack/ui_pack.egg-info to /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack-0.0.0-py3.10.egg-info
+running install_scripts
+Installing ui_main script to /home/st/py_ywfbot_ws/install/ui_pack/lib/ui_pack
+writing list of installed files to '/home/st/py_ywfbot_ws/build/ui_pack/install.log'

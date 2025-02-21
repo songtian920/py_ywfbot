@@ -1,0 +1,96 @@
+[2.934s] Invoking command in '/home/st/py_ywfbot_ws/src/user_func_implement': PYTHONPATH=/home/st/py_ywfbot_ws/build/user_func_implement/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/user_func_implement build --build-base /home/st/py_ywfbot_ws/build/user_func_implement/build install --record /home/st/py_ywfbot_ws/build/user_func_implement/install.log --single-version-externally-managed install_data
+[3.802s] running egg_info
+[3.803s] creating ../../build/user_func_implement/user_func_implement.egg-info
+[3.803s] writing ../../build/user_func_implement/user_func_implement.egg-info/PKG-INFO
+[3.804s] writing dependency_links to ../../build/user_func_implement/user_func_implement.egg-info/dependency_links.txt
+[3.804s] writing entry points to ../../build/user_func_implement/user_func_implement.egg-info/entry_points.txt
+[3.805s] writing requirements to ../../build/user_func_implement/user_func_implement.egg-info/requires.txt
+[3.805s] writing top-level names to ../../build/user_func_implement/user_func_implement.egg-info/top_level.txt
+[3.805s] writing manifest file '../../build/user_func_implement/user_func_implement.egg-info/SOURCES.txt'
+[3.815s] reading manifest file '../../build/user_func_implement/user_func_implement.egg-info/SOURCES.txt'
+[3.815s] adding license file 'LICENSE'
+[3.815s] writing manifest file '../../build/user_func_implement/user_func_implement.egg-info/SOURCES.txt'
+[3.815s] running build
+[3.815s] running build_py
+[3.817s] creating /home/st/py_ywfbot_ws/build/user_func_implement/build
+[3.818s] creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib
+[3.818s] creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement
+[3.818s] copying user_func_implement/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement
+[3.818s] creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera
+[3.818s] copying user_func_implement/camera/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera
+[3.818s] creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+[3.819s] copying user_func_implement/function/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+[3.819s] copying user_func_implement/function/func_tf2.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+[3.819s] copying user_func_implement/function/func_fr_ros2.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+[3.820s] copying user_func_implement/function/error_list.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+[3.823s] copying user_func_implement/function/fr_state_sub.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+[3.823s] copying user_func_implement/function/Func_moveit2.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+[3.825s] copying user_func_implement/function/createRobotTool.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function
+[3.826s] creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.828s] copying user_func_implement/sqlite/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.829s] copying user_func_implement/sqlite/insert_pointData_script.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.830s] copying user_func_implement/sqlite/get_pointList_script.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.832s] copying user_func_implement/sqlite/createFRToolDatabaseScript.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.833s] copying user_func_implement/sqlite/del_table_script.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.834s] copying user_func_implement/sqlite/createFRPointsDatabaseScript.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.835s] copying user_func_implement/sqlite/createFRUserDatabaseScript.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.837s] creating /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS
+[3.837s] copying user_func_implement/camera/MVS/__init__.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS
+[3.838s] copying user_func_implement/camera/MVS/Frame_draw.py -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS
+[3.841s] copying user_func_implement/sqlite/fr_data.db -> /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite
+[3.851s] running install
+[3.851s] running install_lib
+[3.852s] creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement
+[3.852s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement
+[3.852s] creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera
+[3.852s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera
+[3.852s] creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS
+[3.852s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS
+[3.852s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/camera/MVS/Frame_draw.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS
+[3.853s] creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+[3.853s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+[3.853s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/func_tf2.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+[3.853s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/func_fr_ros2.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+[3.853s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/error_list.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+[3.853s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/fr_state_sub.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+[3.854s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/Func_moveit2.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+[3.854s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/function/createRobotTool.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function
+[3.854s] creating /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.854s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/__init__.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.854s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/insert_pointData_script.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.855s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/fr_data.db -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.855s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/get_pointList_script.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.855s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/createFRToolDatabaseScript.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.856s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/del_table_script.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.856s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/createFRPointsDatabaseScript.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.856s] copying /home/st/py_ywfbot_ws/build/user_func_implement/build/lib/user_func_implement/sqlite/createFRUserDatabaseScript.py -> /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[3.861s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/__init__.py to __init__.cpython-310.pyc
+[3.861s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/__init__.py to __init__.cpython-310.pyc
+[3.862s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS/__init__.py to __init__.cpython-310.pyc
+[3.862s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/camera/MVS/Frame_draw.py to Frame_draw.cpython-310.pyc
+[3.901s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/__init__.py to __init__.cpython-310.pyc
+[3.901s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/func_tf2.py to func_tf2.cpython-310.pyc
+[3.902s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/func_fr_ros2.py to func_fr_ros2.cpython-310.pyc
+[3.952s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/error_list.py to error_list.cpython-310.pyc
+[3.952s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/fr_state_sub.py to fr_state_sub.cpython-310.pyc
+[3.959s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/Func_moveit2.py to Func_moveit2.cpython-310.pyc
+[3.959s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/function/createRobotTool.py to createRobotTool.cpython-310.pyc
+[3.960s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/__init__.py to __init__.cpython-310.pyc
+[3.970s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/insert_pointData_script.py to insert_pointData_script.cpython-310.pyc
+[3.970s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/get_pointList_script.py to get_pointList_script.cpython-310.pyc
+[3.971s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/createFRToolDatabaseScript.py to createFRToolDatabaseScript.cpython-310.pyc
+[3.971s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/del_table_script.py to del_table_script.cpython-310.pyc
+[3.971s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/createFRPointsDatabaseScript.py to createFRPointsDatabaseScript.cpython-310.pyc
+[3.971s] byte-compiling /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite/createFRUserDatabaseScript.py to createFRUserDatabaseScript.cpython-310.pyc
+[3.972s] running install_data
+[3.972s] creating /home/st/py_ywfbot_ws/install/user_func_implement/share/ament_index
+[3.972s] creating /home/st/py_ywfbot_ws/install/user_func_implement/share/ament_index/resource_index
+[3.972s] creating /home/st/py_ywfbot_ws/install/user_func_implement/share/ament_index/resource_index/packages
+[3.972s] copying resource/user_func_implement -> /home/st/py_ywfbot_ws/install/user_func_implement/share/ament_index/resource_index/packages
+[3.973s] copying package.xml -> /home/st/py_ywfbot_ws/install/user_func_implement/share/user_func_implement
+[3.973s] running install_egg_info
+[3.974s] Copying ../../build/user_func_implement/user_func_implement.egg-info to /home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages/user_func_implement-0.0.0-py3.10.egg-info
+[3.976s] running install_scripts
+[4.037s] Installing user_func_main script to /home/st/py_ywfbot_ws/install/user_func_implement/lib/user_func_implement
+[4.037s] writing list of installed files to '/home/st/py_ywfbot_ws/build/user_func_implement/install.log'
+[4.093s] Invoked command in '/home/st/py_ywfbot_ws/src/user_func_implement' returned '0': PYTHONPATH=/home/st/py_ywfbot_ws/build/user_func_implement/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/st/py_ywfbot_ws/install/user_func_implement/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/user_func_implement build --build-base /home/st/py_ywfbot_ws/build/user_func_implement/build install --record /home/st/py_ywfbot_ws/build/user_func_implement/install.log --single-version-externally-managed install_data
