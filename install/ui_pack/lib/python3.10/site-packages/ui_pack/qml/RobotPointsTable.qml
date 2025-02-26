@@ -125,7 +125,7 @@ Rectangle{
                 id:header_rect
                 color: "#343b48"
                 Layout.alignment: Qt.AlignTop
-                width: 1800
+                width: 2000
                 height: height_tableRec
 
                 Column
@@ -148,22 +148,22 @@ Rectangle{
                                         case 1: w = 100;break;
                                         case 2: w = 100;break;
                                         case 3: w = 100;break;
-                                        case 4: w = 50;break;
+                                        case 4: w = 100;break;
                                         case 5: w = 100;break;
-                                        case 6: w = 50;break;
-                                        case 7: w = 50;break;
-                                        case 8: w = 70;break;
-                                        case 9: w = 70;break;
-                                        case 10: w = 70;break;
-                                        case 11: w = 70;break;
-                                        case 12: w = 70;break;
-                                        case 13: w = 70;break;
-                                        case 14: w = 70;break;
-                                        case 15: w = 70;break;
-                                        case 16: w = 70;break;
-                                        case 17: w = 70;break;
-                                        case 18: w = 70;break;
-                                        case 19: w = 70;break;
+                                        case 6: w = 100;break;
+                                        case 7: w = 100;break;
+                                        case 8: w = 100;break;
+                                        case 9: w = 100;break;
+                                        case 10: w = 100;break;
+                                        case 11: w = 100;break;
+                                        case 12: w = 100;break;
+                                        case 13: w = 100;break;
+                                        case 14: w = 100;break;
+                                        case 15: w = 100;break;
+                                        case 16: w = 100;break;
+                                        case 17: w = 100;break;
+                                        case 18: w = 100;break;
+                                        case 19: w = 100;break;
                                     }
                                     return w
                                 }
@@ -489,7 +489,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 4
                                 delegate: Rectangle {
-                                    implicitWidth: 50
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -549,7 +549,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 6
                                 delegate: Rectangle {
-                                    implicitWidth: 50
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -579,7 +579,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 7
                                 delegate: Rectangle {
-                                    implicitWidth: 50
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -609,7 +609,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 8
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -639,7 +639,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 9
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -669,7 +669,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 10
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -699,7 +699,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 11
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -729,7 +729,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 12
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -759,7 +759,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 13
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -789,7 +789,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 14
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -819,7 +819,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 15
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -849,7 +849,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 16
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -879,7 +879,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 17
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -909,7 +909,7 @@ Rectangle{
                             DelegateChoice{
                                 column: 18
                                 delegate: Rectangle {
-                                    implicitWidth: 70
+                                    implicitWidth: 100
                                     implicitHeight: 50
                                     required property bool selected
                                     required property bool current
@@ -1107,7 +1107,7 @@ Rectangle{
     {
         console.log("teach_point_callback")
         var _row = tableModel.getRow(rowIndex_selected)
-        //索引出当前行数据 转换成字符串列表， 发送信号更新数据库
+        //索引出当前行数据 设置当前行数据
         tableModel.setRow(rowIndex_selected,
         {"update":false,"delete":false,"teach":false,"exec":false,"name":_row["name"],"comment":_row["comment"] ,"tool":_row["tool"],"user":_row["user"],
         "joint1":parseFloat(value[0]),"joint2":parseFloat(value[1]),"joint3":parseFloat(value[2]),

@@ -60,14 +60,50 @@ ColumnLayout{
     //工具坐标系 和用户坐标系
     Row{
         Layout.alignment: Qt.AlignLeft
-        spacing: 50
+        spacing: 30
+
+        //机器人上电按钮
+        MyButtonText{
+            id:serverOn_btn
+            widthRect: 100
+            heightRect: 40
+            //Layout.alignment: Qt.AlignVCenter
+            //anchors.verticalCenter: parent.verticalCenter
+            buttonText:'机器人使能'
+            pointSize:12
+            color:"green"  //初始设置为主页
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: false // 设置为true以启用悬停事件
+                onPressed: {
+
+                }
+                onReleased: {
+
+                }
+                onClicked: {
+                    if(serverOnOff_status)
+                    {
+                        signal_robotEnable(0)  //机器人使能
+                        serverOn_btn.color = "gray"
+                        serverOnOff_status = false
+                    }
+                    else
+                    {
+                        signal_robotEnable(1)  //机器人使能
+                        serverOn_btn.color = "green"
+                        serverOnOff_status = true
+                    }
+                }
+            }
+        }
         //工具坐标系
         Row{
             Layout.alignment: Qt.AlignVCenter
             spacing: 5
             Text {
                 text: '工具坐标系' // 绑定到外部传入的属性
-                font.pointSize: 15
+                font.pointSize: 12
                 color: "white" // 字体颜色为白色
                 Layout.alignment: Qt.AlignVCenter
             }
@@ -103,7 +139,7 @@ ColumnLayout{
             Layout.alignment: Qt.AlignVCenter
             Text {
                 text: '用户坐标系' // 绑定到外部传入的属性
-                font.pointSize: 15
+                font.pointSize: 12
                 color: "white" // 字体颜色为白色
                 Layout.alignment: Qt.AlignVCenter
             }
@@ -412,7 +448,6 @@ ColumnLayout{
         //手动按钮区
         Column{
             spacing:18
-
             //J1轴，x轴
             RowLayout{
                 id: j1_or_xAxis  //JOG J1轴或x轴
@@ -429,7 +464,6 @@ ColumnLayout{
 
                     // 鼠标悬浮时的背景色变化
                     MouseArea {
-
                         anchors.fill: parent
                         hoverEnabled: true // 设置为true以启用悬停事件
                         onPressed: {
@@ -993,18 +1027,16 @@ ColumnLayout{
     uint8_t ref - 0-关节点动停止, 2-基坐标系下点动停止, 4-工具坐标系下点动停止, 8-工件坐标系下点动停止
     */
     signal signal_StopJOG()
-
     //workSpace改变
     signal signal_WorkSpaceChange(int ref_workSpace)
-
     //tool坐标系改变
     signal signal_toolChange(string tool_name)
-
     //用户坐标系改变
     signal signal_userChange(string user_name)
-
     //执行点位运动
     signal signal_pointMove(string pointName, string moveType,int exeFlag)
+    //伺服上电信号
+    signal signal_robotEnable(int server_status)
 
     // 定义属性来传递值
     property double _robot_j1_xPos_value: 123.000
@@ -1028,5 +1060,7 @@ ColumnLayout{
     property list<string> user_list
     property list<string> point_comment_list
     property string point_comment_current: ""
+    //伺服上电状态保存
+    property bool serverOnOff_status: true
 
 }

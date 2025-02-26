@@ -753,7 +753,7 @@ Rectangle{
         var list_var = [String(_row['comment']),String(_row['x']),String(_row['y']),String(_row['z']),
             String(_row['xRot']),String(_row['yRot']),String(_row['zRot'])]
          //var list_var=['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0']
-         console.log(list_var)
+         //console.log(list_var)
         //发送信号 给数据库
         signal_updateDbRow_robotToolList(_row['name'],list_var)
         text_prompt.text="提示信息：更新一行完成"
@@ -771,6 +771,37 @@ Rectangle{
     {
         //调用 工具标定窗口 示教返回函数
         robotToolCalib.teach_point_callBack(list_pose_data,index)
+    }
+
+    //工具计算结果回传
+    function calculate_tool_callback_toolTable(list_data,type_name)
+    {
+        robotToolCalib.calculate_tool_callback(list_data,type_name)
+    }
+    //新工具结果回传到 界面显示
+    function updateToolData_calibTool_callback(list_data,type_name)
+    {
+
+        if(type_name == "translate")
+        {
+            var _row = tableModel.getRow(rowIndex_selected)
+
+            //索引出当前行数据 设置索引行数据
+            tableModel.setRow(rowIndex_selected,
+            {"update":false,"delete":false,"edit":false,"name":_row["name"],"comment":_row["comment"] ,
+                "x":parseFloat(list_data[0]),"y":parseFloat(list_data[1]),"z":parseFloat(list_data[2]),
+                "xRot":parseFloat(_row["xRot"]),"yRot":parseFloat(_row["yRot"]),"zRot":parseFloat(_row["zRot"])})
+        }
+        else if(type_name == "rotate")
+        {
+            var _row = tableModel.getRow(rowIndex_selected)
+
+            //索引出当前行数据 设置索引行数据
+            tableModel.setRow(rowIndex_selected,
+            {"update":false,"delete":false,"edit":false,"name":_row["name"],"comment":_row["comment"] ,
+                "x":_row["x"],"y":_row["y"],"z":_row["z"],
+                "xRot":parseFloat(list_data[0]),"yRot":parseFloat(list_data[1]),"zRot":parseFloat(list_data[2])})
+        }
     }
 //    //将数据库的数据刷新到 tableModel
 //    function refresh_DBPointListToTableModel(AllRows)
@@ -796,11 +827,11 @@ Rectangle{
     //计算工具平移变换
     signal signal_calculate_tool_trans_toolTable()
     //更新平移变换
-    signal signal_update_tool_trans_toolTable()
+    signal signal_update_tool_trans_toolTable(string name_tool)
     //计算工具旋转变换
     signal signal_calculate_tool_rotate_toolTable()
     //更新工具旋转变换
-    signal signal_update_tool_rotate_toolTable()
+    signal signal_update_tool_rotate_toolTable(string name_tool)
 
     //属性
     property int height_tableRec :3000

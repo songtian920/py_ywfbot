@@ -11,6 +11,16 @@ Rectangle{
     height: 500
     color: "#343b48"
     visible: true
+
+    //工具坐标系
+    RobotUserCalib{
+        id: robotUserCalib
+        anchors.fill: parent
+        color: "#1b1e23"
+        visible: false
+        z: 99
+    }
+
     Row{
         spacing:20
         anchors.top:parent.top
@@ -355,7 +365,8 @@ Rectangle{
                                         }
                                         onClicked: {
                                             console.log("btn clicked row:",row)
-
+                                            selectRow(row) //选中行操作
+                                            user_edit(name_selected)
                                         }
                                     }
                                 }
@@ -663,7 +674,12 @@ Rectangle{
     }
 
      Component.onCompleted: {
-
+        //点位示教信号
+        robotUserCalib.signal_teach_user_point.connect(signal_teach_user_point_userTable)
+        //计算新用户坐标系在基坐标系变换信号
+        robotUserCalib.signal_calculate_user_coord.connect(signal_calculate_user_coord_userTable)
+        //将新用户坐标系在基坐标系变换 更新到界面及数据库
+        robotUserCalib.signal_update_user_coord.connect(signal_update_user_coord_userTable)
 
     }
 
@@ -678,6 +694,12 @@ Rectangle{
         name_selected = row_selected['name']
         console.log(name_selected)
 
+    }
+    //工具坐标系 自定义新工具
+    function user_edit(name_select)
+    {
+        robotUserCalib.name_selected = name_select
+        robotUserCalib.visible = true
     }
 
     //向tableView添加数据： 数据库内容更新到tableView
@@ -735,6 +757,31 @@ Rectangle{
         text_prompt.text="提示信息：更新一行完成"
     }
 
+    //新用户示教点位
+    function teach_point_callBack_userTable(list_pose_data,index)
+    {
+        robotUserCalib.teach_point_callBack(list_pose_data,index)
+    }
+
+    //新用户计算结果回传
+    function calculate_user_callback_userTable(list_data)
+    {
+        robotUserCalib.calculate_user_callback(list_data)
+    }
+
+    //新用户结果回传到 界面显示
+    function updateUserData_calibUser_callback(list_data)
+    {
+        var _row = tableModel.getRow(rowIndex_selected)
+        //索引出当前行数据 设置索引行数据
+        tableModel.setRow(rowIndex_selected,
+            {"update":false,"delete":false,"edit":false,"name":_row["name"],"comment":_row["comment"] ,
+            "x":parseFloat(list_data[0]),"y":parseFloat(list_data[1]),"z":parseFloat(list_data[2]),
+            "xRot":parseFloat(list_data[3]),"yRot":parseFloat(list_data[4]),"zRot":parseFloat(list_data[5])
+            })
+    }
+
+
 //    //将数据库的数据刷新到 tableModel
 //    function refresh_DBPointListToTableModel(AllRows)
 //    {
@@ -754,6 +801,12 @@ Rectangle{
     signal signal_insert_row_robotUserList(string name_pt)
     //数据库刷新到 tableView信号
     signal signal_refresh_DBUserToTableView()
+    //示教点位
+    signal signal_teach_user_point_userTable(int point_index)
+    //计算新用户位姿变换
+    signal signal_calculate_user_coord_userTable()
+    //更新新用户在基坐标系位姿
+    signal signal_update_user_coord_userTable(string name_tool)
 
     //属性
     property int height_tableRec :3000

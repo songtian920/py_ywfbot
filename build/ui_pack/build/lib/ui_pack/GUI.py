@@ -10,6 +10,7 @@ from components import SendSignal
 from rclpy.parameter import Parameter
 import asyncio
 import os
+import math
 
 #
 # class TableModel(QAbstractTableModel):
@@ -93,15 +94,16 @@ class YwfWidget:
     @Slot(bool)
     def manuel_auto_switch(self,mode:bool):
         #print(mode)
-        # mode true为自动
-        self.components.manuel_auto_switch(mode)
-
+        try:
+            # mode true为自动
+            self.components.manuel_auto_switch(mode)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "设置Mode错误："+str(e))
 
     #主界面 开始和暂停状态切换
     @Slot(bool)
     def start_pause_switch(self,mode:bool):
         start_status = self.components.start_pause_switch(mode)
-
 
     #主界面 清除报警
     @Slot()
@@ -156,13 +158,13 @@ class YwfWidget:
 
         if exeFlag == 1:  #开始运动
             if moveType == "MoveJoint":
-                self.components.FuncFrRos2.MoveJoint(pointName)
+                self.components.FuncFrRos2.MoveJoint(pointName,block = False)
             elif moveType == "MovePose":
-                self.components.FuncFrRos2.MovePose(pointName)
+                self.components.FuncFrRos2.MovePose(pointName,block = False)
             elif moveType == "MoveL_Joint":
-                self.components.FuncFrRos2.MoveL_Joint(pointName)
+                self.components.FuncFrRos2.MoveL_Joint(pointName,block = False)
             elif moveType == "MoveL_Pose":
-                self.components.FuncFrRos2.MoveL_Pose(pointName)
+                self.components.FuncFrRos2.MoveL_Pose(pointName,block = False)
 
         else:
             #停止运动
@@ -207,13 +209,20 @@ class YwfWidget:
                 point_cart_data_tran[0] = point_cart_data[0] * 1000
                 point_cart_data_tran[1] = point_cart_data[1] * 1000
                 point_cart_data_tran[2] = point_cart_data[2] * 1000
-                point_cart_data_tran[3] = point_cart_data[3] * 180 / 3.1415926
-                point_cart_data_tran[4] = point_cart_data[4] * 180 / 3.1415926
-                point_cart_data_tran[5] = point_cart_data[5] * 180 / 3.1415926
+                point_cart_data_tran[3] = point_cart_data[3] * 180 / math.pi
+                point_cart_data_tran[4] = point_cart_data[4] * 180 / math.pi
+                point_cart_data_tran[5] = point_cart_data[5] * 180 / math.pi
                 data_send = [joint[0],joint[1],joint[2],joint[3],joint[4],joint[5],
                              point_cart_data_tran[0],point_cart_data_tran[1],point_cart_data_tran[2],
                              point_cart_data_tran[3],point_cart_data_tran[4],point_cart_data_tran[5]]
 
+                #将数据更新到数据库
+                data_DB = [self.components.FuncFrRos2.dic_point[point_name][0],
+                           self.components.FuncFrRos2.dic_point[point_name][1],
+                           self.components.FuncFrRos2.dic_point[point_name][2],
+                           data_send[0],data_send[1],data_send[2],data_send[3],data_send[4],data_send[5],
+                           data_send[6],data_send[7],data_send[8],data_send[9],data_send[10],data_send[11]]
+                self.components.FuncFrRos2.updateDbRow_robotPointList(point_name, data_DB)
                 #数据发送到GUI
                 self.signal_obj.signal_teach_frPointsList.emit(data_send)
         except:
@@ -222,7 +231,7 @@ class YwfWidget:
     @Slot()
     def fr_execute_point(self,point_name,flag_exe):
         if flag_exe == 1:
-            self.components.FuncFrRos2.MoveJoint(point_name)
+            self.components.FuncFrRos2.MoveJoint(point_name,block = False)
         else:
             self.components.FuncFrRos2.StopMotion()
 
@@ -253,45 +262,93 @@ class YwfWidget:
     #自定义新工具坐标系 示教点位
     @Slot()
     def teach_point_calibTool(self,point_index):
-        res = self.components.FuncFrRos2.teach_point_calibTool(point_index)  #示教点位 标定工具坐标系
-        if res:
-            #浅拷贝数据  转换单位
-            pose_rb = self.components.FuncFrRos2.list_pose_calibTool[point_index]
-            pose_rb_trans =[0.0,0.0,0.0,0.0,0.0,0.0]
-            # 转换成mm和角度发送到界面
-            pose_rb_trans[0] = round(pose_rb[0] * 1000,3)
-            pose_rb_trans[1] = round(pose_rb[1] * 1000,3)
-            pose_rb_trans[2] = round(pose_rb[2] * 1000,3)
-            pose_rb_trans[3] = round(pose_rb[3] * 180 / 3.1415926,3)
-            pose_rb_trans[4] = round(pose_rb[4] * 180 / 3.1415926,3)
-            pose_rb_trans[5] = round(pose_rb[5] * 180 / 3.1415926,3)
-            self.signal_obj.signal_teachPoint_calibTool_callBack.emit(pose_rb_trans,point_index)
+        try:
+            res = self.components.FuncFrRos2.teach_point_calibTool(point_index)  #示教点位 标定工具坐标系
+            if res:
+                #浅拷贝数据  转换单位
+                pose_rb = self.components.FuncFrRos2.list_pose_calibTool_temp[point_index]
+                pose_rb_trans =[0.0,0.0,0.0,0.0,0.0,0.0]
+                # 转换成mm和角度发送到界面
+                pose_rb_trans[0] = round(pose_rb[0] * 1000,3)
+                pose_rb_trans[1] = round(pose_rb[1] * 1000,3)
+                pose_rb_trans[2] = round(pose_rb[2] * 1000,3)
+                pose_rb_trans[3] = round(pose_rb[3] * 180 / math.pi,3)
+                pose_rb_trans[4] = round(pose_rb[4] * 180 / math.pi,3)
+                pose_rb_trans[5] = round(pose_rb[5] * 180 / math.pi,3)
+                self.signal_obj.signal_teachPoint_calibTool_callBack.emit(pose_rb_trans,point_index)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "teach_point_calibTool错误:" + str(e))
+
 
     #计算新工具的平移变换
     @Slot()
     def calculate_tool_trans(self):
-        #获取示教的标定点位
-        pose =  self.components.FuncFrRos2.list_pose_calibTool
-        pose_toolInBase = [pose[0], pose[1], pose[3]]  #需要给定的坐标列表
-        #将点位赋值给计算新工具平移变换，计算新工具平移变换
-        x,y,z = self.components.FuncFrRos2.calib_translate_tool(pose_toolInBase)
-        #回传到界面
-
-    #计算新 用户坐标系
-    @Slot()
-    def calculate_user_coord(self):
         try:
-            #测试生成 位姿
-            pose_o = [0.0,0.0,0.0]
-            pose_x = [2.0,2.0,0.0]
-            pose_y = [-2.0,2.0,0.0]
-            pose_z = [0.0,0.0,1.0]
-            #计算出用户新坐标
-            self.components.FuncFrRos2.calib_user_coord([pose_o,pose_x,pose_y,pose_z])
-            #
-        except:
-            print("calculate_user_coord")
+            #获取示教的标定点位
+            pose =  self.components.FuncFrRos2.list_pose_calibTool_temp
+            pose_toolInBase = [pose[0], pose[1], pose[2]]  #需要给定的坐标列表
+            #将点位赋值给计算新工具平移变换，计算新工具平移变换
+            x,y,z = self.components.FuncFrRos2.calib_translate_tool(pose_toolInBase)
 
+            #计算平移变换结果 回传到界面
+            list_pose = [0.0,0.0,0.0]
+            list_pose[0] = round(float(x),6)
+            list_pose[1] = round(float(y),6)
+            list_pose[2] = round(float(z),6)
+            self.signal_obj.signal_calculateTool_calibTool_callback.emit(list_pose,"translate")
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "calculate_tool_trans错误:" + str(e))
+
+    #更新保存新工具的平移变换
+    @Slot()
+    def update_tool_trans(self,name_select):
+        try:
+            # 更新保存数据库的新工具坐标系 平移变换数据
+            res_update_db = self.components.FuncFrRos2.update_tool_translate_DB(name_select)
+            if not res_update_db:
+                self.components.errListUser.append_err(112601, "update_tool_trans更新到数据库错误")
+            #同时将 新工具坐标系 平移变换数据更新到界面显示
+            list_data = [float(self.components.FuncFrRos2.x_trans_toolCalib_temp),float(self.components.FuncFrRos2.y_trans_toolCalib_temp),
+                         float(self.components.FuncFrRos2.z_trans_toolCalib_temp)]
+            self.signal_obj.signal_updateToolData_calibTool_callback.emit(list_data,"translate")
+
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "update_tool_trans错误:"+str(e))
+
+    #计算新工具 旋转变换
+    @Slot()
+    def calculate_tool_rotate(self):
+        try:
+            # 获取示教的标定点位
+            pose = self.components.FuncFrRos2.list_pose_calibTool_temp
+            pose_toolInBase = [pose[3], pose[4], pose[5]]  # 需要给定的坐标列表
+            # 将点位赋值给计算新工具平移变换，计算新工具平移变换
+            x_rotate,y_rotate,z_rotate = self.components.FuncFrRos2.calib_rotate_tool(pose_toolInBase)
+            # 计算平移变换结果 回传到界面
+            list_pose = [0.0, 0.0, 0.0]
+            list_pose[0] = round(float(x_rotate), 6)
+            list_pose[1] = round(float(y_rotate), 6)
+            list_pose[2] = round(float(z_rotate), 6)
+            self.signal_obj.signal_calculateTool_calibTool_callback.emit(list_pose, "rotate")
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "calculate_tool_rotate错误:" + str(e))
+
+    # 更新保存新工具的旋转变换
+    @Slot()
+    def update_tool_rotate(self, name_select):
+        try:
+            # 更新保存数据库的新工具坐标系 平移变换数据
+            res_update_db = self.components.FuncFrRos2.update_tool_rotate_DB(name_select)
+            if not res_update_db:
+                self.components.errListUser.append_err(112601, "update_tool_rotate更新到数据库错误")
+            # 同时将 新工具坐标系 平移变换数据更新到界面显示
+            list_data = [float(self.components.FuncFrRos2.x_rotate_toolCalib_temp),
+                         float(self.components.FuncFrRos2.y_rotate_toolCalib_temp),
+                         float(self.components.FuncFrRos2.z_rotate_toolCalib_temp)]
+            self.signal_obj.signal_updateToolData_calibTool_callback.emit(list_data, "rotate")
+
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "update_tool_rotate错误:" + str(e))
 
     # fr用户坐标系User
     # 手臂用户坐标系表删除一行
@@ -315,6 +372,71 @@ class YwfWidget:
     def refresh_DBUserToTableView(self):
         self.components.FuncFrRos2.fr_load_usersFromDB()  #用户坐标系表加载
         self.components.FuncFrRos2.users_tf_static_broadcaster()  #用户坐标系tf发布
+
+    # 自定义新用户坐标系 示教点位
+    @Slot()
+    def teach_point_calibUser(self, point_index):
+        try:
+            res = self.components.FuncFrRos2.teach_point_calibUser(point_index)  # 示教点位 标定用户坐标系
+            if res:
+                # 浅拷贝数据  转换单位
+                pose_rb = self.components.FuncFrRos2.list_pose_calibUser_temp[point_index]
+                pose_rb_trans = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                # 转换成mm和角度发送到界面
+                pose_rb_trans[0] = round(pose_rb[0] * 1000, 3)
+                pose_rb_trans[1] = round(pose_rb[1] * 1000, 3)
+                pose_rb_trans[2] = round(pose_rb[2] * 1000, 3)
+                pose_rb_trans[3] = round(pose_rb[3] * 180 / math.pi, 3)
+                pose_rb_trans[4] = round(pose_rb[4] * 180 / math.pi, 3)
+                pose_rb_trans[5] = round(pose_rb[5] * 180 / math.pi, 3)
+                self.signal_obj.signal_teachPoint_calibUser_callBack.emit(pose_rb_trans, point_index)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "teach_point_calibTool错误:" + str(e))
+
+    # 计算新 用户坐标系
+    @Slot()
+    def calculate_user_coord(self):
+        try:
+            # 获取示教的标定点位
+            pose = self.components.FuncFrRos2.list_pose_calibUser_temp
+            point_o = [pose[0][0], pose[0][1], pose[0][2]]
+            point_x = [pose[1][0], pose[1][1], pose[1][2]]
+            point_y = [pose[2][0], pose[2][1], pose[2][2]]
+            # 将点位赋值给计算新工具平移变换，计算新工具平移变换
+            x,y,z,x_rotate,y_rotate,z_rotate = (
+                self.components.FuncFrRos2.calib_user_coord([point_o,point_x,point_y]))
+            # 计算平移变换结果 回传到界面
+            list_pose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            list_pose[0] = round(float(x), 6)
+            list_pose[1] = round(float(y), 6)
+            list_pose[2] = round(float(z), 6)
+            list_pose[3] = round(float(x_rotate), 6)
+            list_pose[4] = round(float(y_rotate), 6)
+            list_pose[5] = round(float(z_rotate), 6)
+            self.signal_obj.signal_calculateUser_calibUser_callback.emit(list_pose)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "calculate_tool_rotate错误:" + str(e))
+
+    # 更新保存新用户的旋转变换
+    @Slot()
+    def update_user_coord(self, name_select):
+        try:
+            # 更新保存数据库的新用户坐标系
+            res_update_db = self.components.FuncFrRos2.update_user_coord_DB(name_select)
+            if not res_update_db:
+                self.components.errListUser.append_err(112601, "update_user_coord更新到数据库错误")
+            # 同时将 新工具坐标系 平移变换数据更新到界面显示
+            list_data = [float(self.components.FuncFrRos2.x_trans_userCalib_temp),
+                         float(self.components.FuncFrRos2.y_trans_userCalib_temp),
+                         float(self.components.FuncFrRos2.z_trans_userCalib_temp),
+                         float(self.components.FuncFrRos2.x_rotate_userCalib_temp),
+                         float(self.components.FuncFrRos2.y_rotate_userCalib_temp),
+                         float(self.components.FuncFrRos2.z_rotate_userCalib_temp)]
+            self.signal_obj.signal_updateUserData_calibUser_callback.emit(list_data)
+
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "update_user_coord:" + str(e))
+
 
     #显示窗口
     def show_widget(self):
@@ -392,9 +514,11 @@ class YwfWidget:
         #新工具坐标系标定 计算平移变换
         self.root_object.signal_calculate_tool_trans_main.connect(self.calculate_tool_trans)
         #新工具坐标系标定 平移变换更新到界面及数据库
-        #self.root_object.signal_update_tool_trans_main.connect()
-        #todo 测试新工具坐标系 计算旋转变换
-        self.root_object.signal_calculate_tool_rotate_main.connect(self.calculate_user_coord)
+        self.root_object.signal_update_tool_trans_main.connect(self.update_tool_trans)
+        # 新工具坐标系标定 计算旋转变换
+        self.root_object.signal_calculate_tool_rotate_main.connect(self.calculate_tool_rotate)
+        # 新工具坐标系标定 保存旋转变换
+        self.root_object.signal_update_tool_rotate_main.connect(self.update_tool_rotate)
 
         # 手臂用户坐标系表
         #删
@@ -405,6 +529,12 @@ class YwfWidget:
         self.root_object.signal_insert_row_robotUserList_main.connect(self.insert_row_robotUserList_main)
         #查
         self.root_object.signal_refresh_DBUserToTableView_main.connect(self.refresh_DBUserToTableView)
+        #新用户示教点位
+        self.root_object.signal_teach_user_point_userTable_main.connect(self.teach_point_calibUser)
+        #计算新用户位姿变换
+        self.root_object.signal_calculate_user_coord_userTable_main.connect(self.calculate_user_coord)
+        #更新新用户在基坐标系位姿
+        self.root_object.signal_update_user_coord_userTable_main.connect(self.update_user_coord)
 
         #测试
         #self.root_object.mySignal.connect(self.signal_subQml_test)

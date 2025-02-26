@@ -48,6 +48,8 @@ class FuncFrRos2(Node):
         self.fr_state = frState
         #tf2监视，发布器
         self.func_tf2 = funcTf2
+        #数据库相对路径
+        self.path_dataBase = '/user_func_implement/user_func_implement/sqlite/fr_data.db'
         #发送给界面的整型信号数据
         self.signal_list_int = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
         #发送给界面的双精度信号数据
@@ -77,11 +79,34 @@ class FuncFrRos2(Node):
         # 用户坐标系字典
         self.dic_user = {}
 
-        #自定义工具坐标系标定
-        self.list_pose_calibTool = [[0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0]]  #默认工具坐标系在基坐标系位姿列表
-        self.x_trans_toolCalib = 0.0
-        self.y_trans_toolCalib = 0.0
-        self.z_trans_toolCalib = 0.0
+        #自定义工具坐标系标定临时变量
+        self.tool_name_temp = ""
+        # 默认工具坐标系在基坐标系位姿列表
+        self.list_pose_calibTool_temp = [[0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0],
+                                         [0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0],
+                                         [0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0]]
+        #计算出 新工具坐标系到默认工具坐标系的变换关系
+        self.x_trans_toolCalib_temp = 0.0
+        self.y_trans_toolCalib_temp = 0.0
+        self.z_trans_toolCalib_temp = 0.0
+        self.x_rotate_toolCalib_temp = 0.0
+        self.y_rotate_toolCalib_temp = 0.0
+        self.z_rotate_toolCalib_temp = 0.0
+
+        # 自定义用户坐标系标定临时变量
+        self.user_name_temp = ""
+        # 默认工具坐标系在基坐标系位姿列表
+        self.list_pose_calibUser_temp = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        #计算出 新用户坐标系到默认基坐标系的变换关系
+        self.x_trans_userCalib_temp = 0.0
+        self.y_trans_userCalib_temp = 0.0
+        self.z_trans_userCalib_temp = 0.0
+        self.x_rotate_userCalib_temp = 0.0
+        self.y_rotate_userCalib_temp = 0.0
+        self.z_rotate_userCalib_temp = 0.0
+
 
     #配置
     # 02
@@ -170,9 +195,9 @@ class FuncFrRos2(Node):
                     x = tool_var[1] / 1000   #毫米mm单位转化为米单位m
                     y = tool_var[2] / 1000   #毫米mm单位转化为米单位m
                     z = tool_var[3] / 1000  # 毫米mm单位转化为米单位m
-                    x_rot_rad = tool_var[4] * 3.1415926 / 180  #角度转弧度
-                    y_rot_rad = tool_var[5] * 3.1415926 / 180  # 角度转弧度
-                    z_rot_rad = tool_var[6] * 3.1415926 / 180  # 角度转弧度
+                    x_rot_rad = tool_var[4] * math.pi / 180  #角度转弧度
+                    y_rot_rad = tool_var[5] * math.pi / 180  # 角度转弧度
+                    z_rot_rad = tool_var[6] * math.pi / 180  # 角度转弧度
                     #转化信息
                     trans_mes=["tool0",child_frame,x,y,z,x_rot_rad,y_rot_rad,z_rot_rad]
                     #生成transform类型
@@ -196,9 +221,9 @@ class FuncFrRos2(Node):
                 x = tool_var[1] / 1000  # 毫米mm单位转化为米单位m
                 y = tool_var[2] / 1000  # 毫米mm单位转化为米单位m
                 z = tool_var[3] / 1000  # 毫米mm单位转化为米单位m
-                x_rot_rad = tool_var[4] * 3.1415926 / 180  # 角度转弧度
-                y_rot_rad = tool_var[5] * 3.1415926 / 180  # 角度转弧度
-                z_rot_rad = tool_var[6] * 3.1415926 / 180  # 角度转弧度
+                x_rot_rad = tool_var[4] * math.pi / 180  # 角度转弧度
+                y_rot_rad = tool_var[5] * math.pi / 180  # 角度转弧度
+                z_rot_rad = tool_var[6] * math.pi / 180  # 角度转弧度
                 # 转化信息
                 trans_mes = ["tool0", child_frame, x, y, z, x_rot_rad, y_rot_rad, z_rot_rad]
                 # 生成transform类型
@@ -223,9 +248,9 @@ class FuncFrRos2(Node):
                     x = user_var[1] / 1000  # 毫米mm单位转化为米单位m
                     y = user_var[2] / 1000  # 毫米mm单位转化为米单位m
                     z = user_var[3] / 1000  # 毫米mm单位转化为米单位m
-                    x_rot_rad = user_var[4] * 3.1415926 / 180  # 角度转弧度
-                    y_rot_rad = user_var[5] * 3.1415926 / 180  # 角度转弧度
-                    z_rot_rad = user_var[6] * 3.1415926 / 180  # 角度转弧度
+                    x_rot_rad = user_var[4] * math.pi / 180  # 角度转弧度
+                    y_rot_rad = user_var[5] * math.pi / 180  # 角度转弧度
+                    z_rot_rad = user_var[6] * math.pi / 180  # 角度转弧度
                     # 转化信息
                     trans_mes = ["fr_baseLink", child_frame, x, y, z, x_rot_rad, y_rot_rad, z_rot_rad]
                     # 生成transform类型
@@ -248,9 +273,9 @@ class FuncFrRos2(Node):
                 x = user_var[1] / 1000  # 毫米mm单位转化为米单位m
                 y = user_var[2] / 1000  # 毫米mm单位转化为米单位m
                 z = user_var[3] / 1000  # 毫米mm单位转化为米单位m
-                x_rot_rad = user_var[4] * 3.1415926 / 180  # 角度转弧度
-                y_rot_rad = user_var[5] * 3.1415926 / 180  # 角度转弧度
-                z_rot_rad = user_var[6] * 3.1415926 / 180  # 角度转弧度
+                x_rot_rad = user_var[4] * math.pi / 180  # 角度转弧度
+                y_rot_rad = user_var[5] * math.pi / 180  # 角度转弧度
+                z_rot_rad = user_var[6] * math.pi / 180  # 角度转弧度
                 # 转化信息
                 trans_mes = ["fr_baseLink", child_frame, x, y, z, x_rot_rad, y_rot_rad, z_rot_rad]
                 # 生成transform类型
@@ -276,9 +301,9 @@ class FuncFrRos2(Node):
                 x = point_var[9] / 1000  # 毫米mm单位转化为米单位m
                 y = point_var[10] / 1000  # 毫米mm单位转化为米单位m
                 z = point_var[11] / 1000  # 毫米mm单位转化为米单位m
-                x_rot_rad = point_var[12] * 3.1415926 / 180  # 角度转弧度
-                y_rot_rad = point_var[13] * 3.1415926 / 180  # 角度转弧度
-                z_rot_rad = point_var[14] * 3.1415926 / 180  # 角度转弧度
+                x_rot_rad = point_var[12] * math.pi / 180  # 角度转弧度
+                y_rot_rad = point_var[13] * math.pi / 180  # 角度转弧度
+                z_rot_rad = point_var[14] * math.pi / 180  # 角度转弧度
                 # 转化信息
                 trans_mes = [father_frame, child_frame, x, y, z, x_rot_rad, y_rot_rad, z_rot_rad]
                 # 生成transform类型
@@ -401,7 +426,7 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 = os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -456,7 +481,7 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 = os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -489,13 +514,16 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 =os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2+'/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
             # 读取表格信息
             cursor.execute('INSERT INTO fr_PointData (name) VALUES (?)', (name_str,))
             conn.commit()
+            # 更新到点表字典 dic_point
+            self.dic_point[name_str] = ["注释", "tool0", "fr_baseLink", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
             #发送信号给GUI添加一行
             self.send_signal.signal_insertNewRowToTM_DB_frPoint.emit(name_str)
             return True,""
@@ -525,7 +553,7 @@ class FuncFrRos2(Node):
         split_path2, folder2 = os.path.split(split_path1)
 
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -590,7 +618,7 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 = os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -636,7 +664,7 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 = os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -669,7 +697,7 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 = os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -705,7 +733,7 @@ class FuncFrRos2(Node):
         split_path2, folder2 = os.path.split(split_path1)
 
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -746,10 +774,7 @@ class FuncFrRos2(Node):
             print(e)
             self.err_log.append_err(111502, str(e))
             return False
-        except:
-            print("fr_load_pointsFromDB：加载机器人点位错误")
-            self.err_log.append_err(111503, "fr_load_pointsFromDB：加载机器人点位错误")
-            return False
+
         finally:
             cursor.close()
             conn.close()
@@ -759,11 +784,220 @@ class FuncFrRos2(Node):
     def teach_point_calibTool(self,point_index):
         res,pose = self.getTfPos_currentCoordinate("tool0","fr_baseLink")
         if res:
-            self.list_pose_calibTool[point_index] = pose
+            self.list_pose_calibTool_temp[point_index] = pose
             return True
         else:
             self.err_log.append_err(111601, "工具坐标系获取当前坐标失败，请检查机器人当前坐标是否正常")
             return False
+
+    # 工具坐标系的标定
+    # 用户通过执行器末端对针，围绕针尖至少示教出3个点以上，将默认工具坐标系坐标传入，计算出用户自定义的新工具坐标的平移变化
+    # todo
+    def calib_translate_tool(self, poseList_toolInBase):
+        # 变量声明
+        # 位姿的旋转矩阵数组
+        T_rot_toolInBase = []
+        # 位姿的平移矩阵
+        T_trans_toolInBase = []
+
+        # 先判断位姿数量是否大于等于3个
+        count_pose = len(poseList_toolInBase)
+        if count_pose < 3:
+            self.err_log.append_err(111903,
+                                    "calib_tool错误：输入的位姿数据少于3个，请至少示教3个以上点位")
+            return False
+        # 遍历计算每组位姿，计算出相应的矩阵
+        for pose in poseList_toolInBase:
+            # 平移变换矩阵添加到矩阵列表
+            T_trans_ = np.array([pose[0], pose[1], pose[2]])  # 单位转换
+            T_trans_toolInBase.append(T_trans_)  # 添加到列表
+            # 计算出旋转矩阵
+            # 欧拉角转四元数
+            q_ = tfs.euler.euler2quat(pose[3], pose[4], pose[5])  # 转换为弧度单位计算
+            # 四元数转成旋转矩阵
+            T_rot_ = tfs.quaternions.quat2mat(q_)
+            # 旋转矩阵列表添加
+            T_rot_toolInBase.append(T_rot_)
+
+        # 配置 相邻点位 旋转矩阵差 T_rot_(i-1) - T_rot_i
+        T_rot_sub = None
+        T_trans_sub = None
+        for i in range(count_pose):
+            if i == 1:
+                T_rot_sub = np.array(T_rot_toolInBase[i - 1]) - np.array(T_rot_toolInBase[i])
+                T_trans_sub = np.array(T_trans_toolInBase[i]) - np.array(T_trans_toolInBase[i - 1])
+            elif i > 1:
+                T_rot_sub = np.vstack(
+                    (T_rot_sub, np.array(T_rot_toolInBase[i - 1]) - np.array(T_rot_toolInBase[i])))
+                T_trans_sub = np.hstack(
+                    (T_trans_sub, np.array(T_trans_toolInBase[i]) - np.array(T_trans_toolInBase[i - 1])))
+
+        # T_rot_sub的转置T_rot_sub_transpose
+        T_rot_sub_transpose = T_rot_sub.transpose()
+        # 最小二乘法 T = (AT.A){-1}.AT.b
+        # 这里，AT 是 A 的转置，而 (AT A){-1} 是 AT A 的逆矩阵
+        # T0 = AT.A  T1 = [AT.A]-1  矩阵A转置乘A，再求逆
+        T0 = np.dot(T_rot_sub_transpose, T_rot_sub)
+        T1 = np.linalg.inv(T0)
+        # T2 = AT.b
+        T2 = np.dot(T_rot_sub_transpose, T_trans_sub)
+        # T3 = T1.T2 T3为求出的 新工具坐标系 在旧坐标系的平移 变换
+        T3 = np.dot(T1, T2)
+        # 计算的平移变化 保存在对象变量
+        x_trans = T3[0]
+        y_trans = T3[1]
+        z_trans = T3[2]
+        # 保存到内部对象 转换单位为mm
+        x_trans_mm = x_trans*1000
+        y_trans_mm = y_trans*1000
+        z_trans_mm = z_trans*1000
+        self.x_trans_toolCalib_temp = x_trans_mm
+        self.y_trans_toolCalib_temp = y_trans_mm
+        self.z_trans_toolCalib_temp = z_trans_mm
+        # 返回新工具坐标系在原始坐标系的 平移值
+        return x_trans_mm, y_trans_mm, z_trans_mm
+
+    # 更新保存数据库中工具坐标系 的平移变换数据
+    def update_tool_translate_DB(self, name_selected):
+        # 路径连接
+        current_path = os.getcwd()
+        split_path1, folder1 = os.path.split(current_path)
+        split_path2, folder2 = os.path.split(split_path1)
+        # 连接数据库 并读取数据
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
+        # 创建一个Cursor:
+        cursor = conn.cursor()
+        try:
+            # 执行更新语句，更新user表的数据:
+            update_stmt = 'UPDATE fr_ToolData SET cart_x=?,cart_y=?,cart_z=? WHERE name = ?'
+            x = float(self.x_trans_toolCalib_temp)
+            y = float(self.y_trans_toolCalib_temp)
+            z = float(self.z_trans_toolCalib_temp)
+
+            update_values = ( x, y, z, name_selected)
+            cursor.execute(update_stmt, update_values)
+            conn.commit()
+            # 更新到本地工具坐标系表
+            self.dic_tool[name_selected][1] = x
+            self.dic_tool[name_selected][2] = y
+            self.dic_tool[name_selected][3] = z
+            return True
+        except OperationalError as o:
+            print(str(o))
+            self.err_log.append_err(111201, str(o))
+            return False
+        except Exception as e:
+            print(e)
+            self.err_log.append_err(111202,"更新新工具平移变换错误："+ str(e))
+            return False
+        finally:
+            cursor.close()
+            conn.close()
+
+    # 新工具坐标系变换操作和 新用户坐标系的标定方法相似，但标定的向量和工具相反，需要取反
+    # 新工具姿势保持不变，标定出三个点，第一个点是新工具坐标系原点B_uo，
+    # 第二个点是x轴正方向上一任意点B_ux，第三个点为xy平面上接近y轴的点B_uxy
+    # 这三个点构成了代表新工具坐标轴x的向量V_ux =(Px-Po)_inverse=Po-Px，
+    # xy轴平面内的接近y轴向量V_uxy = (Pxy-Po)_inverse = Po-Pxy
+    # 通过叉乘 可以得到垂直于新工具轴xy平面的向量，此向量为新工具坐标z轴的向量，V_uz = V_ux 差乘 V_uxy
+    # 然后通过叉乘 得到 V_uy = V_uz x V_ux(叉乘方向右手螺旋定则)
+    # 求出各轴单位向量 V_ux_unit, V_uy_unit, V_uz_unit，
+    # 根据原点point_uo,计算出新工具坐标系三个轴向单位向量在基坐标系中的坐标[V_ux_unit,V_uy_unit,V_uz_unit,point_uo]
+    # 然后构建出4 x 4矩阵，这个矩阵式 新工具到基坐标系的变换矩阵 T_newToolToBase
+    # 再从矩阵计算出 旋转量和平移量
+    def calib_rotate_tool(self, poseList_toolInBase):
+        # 先判断位姿数量是否等于3个
+        count_pose = len(poseList_toolInBase)
+        if count_pose != 3:
+            self.err_log.append_err(111903,
+                                    "calib_user_coord错误：输入的位姿数据不等于3个，请示教3个点位")
+            return False
+        # 构建矩阵
+        # o点在基坐标系位姿
+        point_uo = np.array([poseList_toolInBase[0][0],poseList_toolInBase[0][1],poseList_toolInBase[0][2]])
+        # x点在基坐标系位姿
+        point_ux = np.array([poseList_toolInBase[1][0],poseList_toolInBase[1][1],poseList_toolInBase[1][2]])
+        # y点在基坐标系位姿
+        point_uxy = np.array([poseList_toolInBase[2][0],poseList_toolInBase[2][1],poseList_toolInBase[2][2]])
+        # 代表新工具坐标轴x的向量V_ux（注意此时向量空间在基坐标系）
+        #坐标轴x的向量V_ux =(Px-Po)_inverse=Po-Px,因为新工具坐标系向量和基坐标系示教的向量方向相反
+        V_ux = point_uo-point_ux
+        # 代表新工具坐标 xy轴平面内的任意向量V_uxy（注意此时向量空间在基坐标系）
+        # xy轴平面内的接近y轴向量V_uxy = (Pxy-Po)_inverse = Po-Pxy，因为工具坐标系向量和基坐标系示教的向量方向相反
+        V_uxy = point_uo-point_uxy
+        # 通过叉乘 可以得到垂直于新工具轴xy平面的向量，此向量为新工具坐标z轴的向量，V_uz = V_ux 差乘 V_uxy(注意叉乘方向)
+        V_uz = np.cross(V_ux, V_uxy)
+        # 此时已知新工具坐标系上 x轴上的向量V_ux和z轴上的向量V_uz，则再通过叉乘得到y轴上的V_uy向量(注意叉乘方向)
+        V_uy = np.cross(V_uz, V_ux)
+        # 此时分别求出了x,y,z轴上的向量，然后分别求出各轴上单位向量
+        V_ux_unit = V_ux / np.linalg.norm(V_ux)
+        V_uy_unit = V_uy / np.linalg.norm(V_uy)
+        V_uz_unit = V_uz / np.linalg.norm(V_uz)
+
+        # 构建基坐标系三个轴单位 点坐标矩阵 做转置
+        T_1 = np.array([V_ux_unit, V_uy_unit, V_uz_unit, point_uo]).transpose()
+        # 再拼接[0,0,0,1]就构成了 新工具旋转等效的用户userTool 到 base的齐次变换矩阵 T_userToolToBase
+        T_userToolToBase = np.vstack((T_1, [0.0, 0.0, 0.0, 1.0]))
+        # 切片旋转矩阵
+        T_rot_newToolToBase = T_userToolToBase[:3, :3]
+
+        #此时根据当前默认工具在基坐标系位姿,计算出旋转矩阵，然后求出新工具在默认工具的旋转变换
+        # 欧拉角转四元数,注意是弧度单位计算
+        q_toolToBase = tfs.euler.euler2quat(poseList_toolInBase[0][3], poseList_toolInBase[0][4], poseList_toolInBase[0][5])
+        # 四元数转成旋转矩阵
+        T_rot_toolToBase = tfs.quaternions.quat2mat(q_toolToBase)
+        #逆矩阵
+        T_rot_baseToTool = np.linalg.inv(T_rot_toolToBase)
+        #再求出 新工具到默认工具的变换关系
+        T_rot_newToolToTool = np.dot(T_rot_baseToTool,T_rot_newToolToBase)
+        # 旋转矩阵转欧拉角
+        x_rot_rad, y_rot_rad, z_rot_rad = tfs.euler.mat2euler(T_rot_newToolToTool)
+
+        # 保存在内部对象 弧度转换为角度
+        x_rot_angle = x_rot_rad * 180 / math.pi
+        y_rot_angle = y_rot_rad * 180 / math.pi
+        z_rot_angle = z_rot_rad * 180 / math.pi
+        self.x_rotate_toolCalib_temp = x_rot_angle
+        self.y_rotate_toolCalib_temp = y_rot_angle
+        self.z_rotate_toolCalib_temp = z_rot_angle
+        return  x_rot_angle, y_rot_angle, z_rot_angle
+
+    # 更新保存数据库中工具坐标系 的平移变换数据
+    def update_tool_rotate_DB(self, name_selected):
+        # 路径连接
+        current_path = os.getcwd()
+        split_path1, folder1 = os.path.split(current_path)
+        split_path2, folder2 = os.path.split(split_path1)
+        # 连接数据库 并读取数据
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
+        # 创建一个Cursor:
+        cursor = conn.cursor()
+        try:
+            # 执行更新语句，更新user表的数据:
+            update_stmt = 'UPDATE fr_ToolData SET cart_xRot=?,cart_yRot=?,cart_zRot=? WHERE name = ?'
+            x_rotate = float(self.x_rotate_toolCalib_temp)
+            y_rotate = float(self.y_rotate_toolCalib_temp)
+            z_rotate = float(self.z_rotate_toolCalib_temp)
+
+            update_values = (x_rotate, y_rotate, z_rotate, name_selected)
+            cursor.execute(update_stmt, update_values)
+            conn.commit()
+            # 更新到本地工具坐标系表
+            self.dic_tool[name_selected][4] = x_rotate
+            self.dic_tool[name_selected][5] = y_rotate
+            self.dic_tool[name_selected][6] = z_rotate
+            return True
+        except OperationalError as o:
+            print(str(o))
+            self.err_log.append_err(111201, str(o))
+            return False
+        except Exception as e:
+            print(e)
+            self.err_log.append_err(111202, "更新新工具旋转变换错误：" + str(e))
+            return False
+        finally:
+            cursor.close()
+            conn.close()
 
     # GUI单行用户坐标表更新到 数据库  本地用户坐标系字典
     #16
@@ -773,7 +1007,7 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 = os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -819,7 +1053,7 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 = os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -852,7 +1086,7 @@ class FuncFrRos2(Node):
         split_path1, folder1 = os.path.split(current_path)
         split_path2, folder2 = os.path.split(split_path1)
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -888,7 +1122,7 @@ class FuncFrRos2(Node):
         split_path2, folder2 = os.path.split(split_path1)
 
         # 连接数据库 并读取数据
-        conn = sqlite3.connect(split_path2 + '/user_func_implement/user_func_implement/sqlite/fr_data.db')
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
         # 创建一个Cursor:
         cursor = conn.cursor()
         try:
@@ -936,79 +1170,31 @@ class FuncFrRos2(Node):
             cursor.close()
             conn.close()
 
-    #工具坐标系的标定
-    #用户通过执行器末端对针，围绕针尖至少示教出3个点以上，将默认工具坐标系坐标传入，计算出用户自定义的新工具坐标的平移变化
-    #todo
-    def calib_translate_tool(self,poseList_toolInBase):
-        # 变量声明
-        # 位姿的旋转矩阵数组
-        T_rot_toolInBase = []
-        # 位姿的平移矩阵
-        T_trans_toolInBase = []
-
-        # 先判断位姿数量是否大于等于3个
-        count_pose = len(poseList_toolInBase)
-        if count_pose < 3:
-            self.err_log.append_err(111903,
-                                    "calib_tool错误：输入的位姿数据少于3个，请至少示教3个以上点位")
+    # 工具坐标系 示教点位
+    # todo
+    def teach_point_calibUser(self, point_index):
+        res, pose = self.getTfPos_currentCoordinate("tool0", "fr_baseLink")
+        if res:
+            self.list_pose_calibUser_temp[point_index] = pose
+            return True
+        else:
+            self.err_log.append_err(111601, "工具坐标系获取当前坐标失败，请检查机器人当前坐标是否正常")
             return False
-        # 遍历计算每组位姿，计算出相应的矩阵
-        for pose in poseList_toolInBase:
-            # 平移变换矩阵添加到矩阵列表
-            T_trans_ = np.array([pose[0] , pose[1] , pose[2] ])  # 单位转换
-            T_trans_toolInBase.append(T_trans_)  # 添加到列表
-            # 计算出旋转矩阵
-            # 欧拉角转四元数
-            q_ = tfs.euler.euler2quat(pose[3] , pose[4] ,pose[5] )  # 转换为弧度单位计算
-            # 四元数转成旋转矩阵
-            T_rot_ = tfs.quaternions.quat2mat(q_)
-            # 旋转矩阵列表添加
-            T_rot_toolInBase.append(T_rot_)
-
-        # 配置 相邻点位 旋转矩阵差 T_rot_(i-1) - T_rot_i
-        T_rot_sub = None
-        T_trans_sub = None
-        for i in range(count_pose):
-            if i == 1:
-                T_rot_sub = np.array(T_rot_toolInBase[i - 1]) - np.array(T_rot_toolInBase[i])
-                T_trans_sub = np.array(T_trans_toolInBase[i]) - np.array(T_trans_toolInBase[i - 1])
-            elif i>1:
-                T_rot_sub = np.vstack((T_rot_sub, np.array(T_rot_toolInBase[i - 1]) - np.array(T_rot_toolInBase[i])))
-                T_trans_sub = np.hstack((T_trans_sub,np.array(T_trans_toolInBase[i]) - np.array(T_trans_toolInBase[i - 1])))
-
-        # T_rot_sub的转置T_rot_sub_transpose
-        T_rot_sub_transpose = T_rot_sub.transpose()
-        # 最小二乘法 T = (AT.A){-1}.AT.b
-        # 这里，AT 是 A 的转置，而 (AT A){-1} 是 AT A 的逆矩阵
-        # T0 = AT.A  T1 = [AT.A]-1  矩阵A转置乘A，再求逆
-        T0 = np.dot(T_rot_sub_transpose, T_rot_sub)
-        T1 = np.linalg.inv(T0)
-        # T2 = AT.b
-        T2 = np.dot(T_rot_sub_transpose, T_trans_sub)
-        # T3 = T1.T2 T3为求出的 新工具坐标系 在旧坐标系的平移 变换
-        T3 = np.dot(T1, T2)
-        # 计算的平移变化 保存在对象变量
-        self.x_trans_toolCalib = T3[0]
-        self.y_trans_toolCalib = T3[1]
-        self.z_trans_toolCalib = T3[2]
-        # 返回新工具坐标系在原始坐标系的 平移值
-        return self.x_trans_toolCalib, self.y_trans_toolCalib, self.z_trans_toolCalib
 
     # 用户坐标系的标定
-    #新工具姿势保持不变，标定出三个点，第一个点是新用户坐标系原点B_uo，
+    # 新工具姿势保持不变，标定出三个点，第一个点是新用户坐标系原点B_uo，
     # 第二个点是x轴正方向上一任意点B_ux，第三个点为xy平面上接近y轴的点B_uxy
-    #这三个点构成了代表用户坐标轴x的向量V_ux，代表用户坐标 xy轴平面内的接近y轴向量V_uxy
-    #通过叉乘 可以得到垂直于用户轴xy平面的向量，此向量为用户坐标z轴的向量，V_uz = V_ux 差乘 V_uxy
-    #然后通过叉乘 得到 V_uy = V_uz x V_ux(叉乘方向右手螺旋定则)
-    #求出各轴单位向量 V_ux_unit, V_uy_unit, V_uz_unit，
-    # 根据原点point_uo,计算出用户坐标系三个轴向单位向量在基坐标系中的坐标
-    #然后通过三点在两个坐标系的坐标构建4x4正规矩阵，TU = [Ux,Uy,Uz,1→] TB = [Bx,By,Bz,1→]
-    #定义的用户坐标系在基坐标系的齐次变换矩阵 T_userInBase
-    #公式  TB = T_userInBase x TU 推出 T_userInBase = TB x TU_inverse
+    # 这三个点构成了代表用户坐标轴x的向量V_ux，代表用户坐标 xy轴平面内的接近y轴向量V_uxy
+    # 通过叉乘 可以得到垂直于用户轴xy平面的向量，此向量为用户坐标z轴的向量，V_uz = V_ux 差乘 V_uxy
+    # 然后通过叉乘 得到 V_uy = V_uz x V_ux(叉乘方向右手螺旋定则)
+    # 求出各轴单位向量 V_ux_unit, V_uy_unit, V_uz_unit，
+    # 根据原点point_uo,计算出用户坐标系三个轴向单位向量在基坐标系中的坐标[V_ux_unit,V_uy_unit,V_uz_unit,point_uo]
+    # 然后构建出4 x 4矩阵，这个矩阵式 user到基坐标系的变换矩阵 T_userToBase
+    # 再从矩阵计算出 旋转量和平移量
     def calib_user_coord(self,pointList_toolInBase):
         # 先判断位姿数量是否等于3个
         count_pose = len(pointList_toolInBase)
-        if count_pose != 4:
+        if count_pose != 3:
             self.err_log.append_err(111903,
                                     "calib_user_coord错误：输入的位姿数据不等于3个，请示教3个点位")
             return False
@@ -1028,21 +1214,76 @@ class FuncFrRos2(Node):
         V_ux_unit = V_ux / np.linalg.norm(V_ux)
         V_uy_unit = V_uy / np.linalg.norm(V_uy)
         V_uz_unit = V_uz / np.linalg.norm(V_uz)
-        #根据原点point_uo,计算出用户坐标系三个轴向单位向量在基坐标系中的坐标
-        point_ux_unit = V_ux_unit + point_uo
-        point_uy_unit = V_uy_unit + point_uo
-        point_uz_unit = V_uz_unit + point_uo
-        #构建用户坐标系U的单位正规方程，做转置
-        TU = np.array([[1.0, 0.0, 0.0, 1.0],[0.0, 1.0, 0.0, 1.0],[0.0, 0.0, 1.0, 1.0],[0.0, 0.0, 0.0, 1.0]]).transpose()
+
         #构建基坐标系三个轴单位 点坐标矩阵 做转置
-        T_1 = np.array([point_ux_unit,point_uy_unit,point_uz_unit]).transpose()
-        T_2 = np.vstack((T_1,[1.0,1.0,1.0]))
-        T_3 = np.array([0.0, 0.0, 0.0, 1.0]).transpose()
-        TB = np.hstack((T_2, T_3))
-        #计算出用户坐标系在极坐标系的变换
-        T_userInBase = np.dot(TB,np.linalg.inv(TU))
-        print("结束")
-        pass
+        T_1 = np.array([V_ux_unit,V_uy_unit,V_uz_unit,point_uo]).transpose()
+        # 再拼接[0,0,0,1]就构成了 user 到 base的齐次变换矩阵 T_userToBase
+        T_userToBase = np.vstack((T_1,[0.0,0.0,0.0,1.0]))
+        # 切片旋转矩阵
+        T_rot = T_userToBase[:3, :3]
+        T_trans = T_userToBase[0:3,3:4]
+        #旋转矩阵转欧拉角
+        x_rot,y_rot,z_rot = tfs.euler.mat2euler(T_rot)
+        x_trans = T_trans[0][0]
+        y_trans = T_trans[1][0]
+        z_trans = T_trans[2][0]
+        #转成mm单位，和角度单位
+        x_trans_mm = x_trans * 1000
+        y_trans_mm = y_trans * 1000
+        z_trans_mm = z_trans * 1000
+        x_rot_angle = x_rot*180/math.pi
+        y_rot_angle = y_rot * 180 / math.pi
+        z_rot_angle = z_rot * 180 / math.pi
+        #保存在内部对象
+        self.x_trans_userCalib_temp = x_trans_mm
+        self.y_trans_userCalib_temp = y_trans_mm
+        self.z_trans_userCalib_temp = z_trans_mm
+        self.x_rotate_userCalib_temp = x_rot_angle
+        self.y_rotate_userCalib_temp = y_rot_angle
+        self.z_rotate_userCalib_temp = z_rot_angle
+        return x_trans_mm,y_trans_mm,z_trans_mm,x_rot_angle,y_rot_angle,z_rot_angle
+
+    # 更新保存数据库中新用户坐标系 的位姿数据
+    def update_user_coord_DB(self, name_selected):
+        # 路径连接
+        current_path = os.getcwd()
+        split_path1, folder1 = os.path.split(current_path)
+        split_path2, folder2 = os.path.split(split_path1)
+        # 连接数据库 并读取数据
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
+        # 创建一个Cursor:
+        cursor = conn.cursor()
+        try:
+            # 执行更新语句，更新user表的数据:
+            update_stmt = 'UPDATE fr_UserData SET cart_x=?,cart_y=?,cart_z=?,cart_xRot=?,cart_yRot=?,cart_zRot=? WHERE name = ?'
+            x = float(self.x_trans_userCalib_temp)
+            y = float(self.y_trans_userCalib_temp)
+            z = float(self.z_trans_userCalib_temp)
+            x_rot = float(self.x_rotate_userCalib_temp)
+            y_rot = float(self.y_rotate_userCalib_temp)
+            z_rot = float(self.z_rotate_userCalib_temp)
+            update_values = (x, y, z, x_rot, y_rot, z_rot, name_selected)
+            cursor.execute(update_stmt, update_values)
+            conn.commit()
+            # 更新到本地工具坐标系表
+            self.dic_user[name_selected][1] = x
+            self.dic_user[name_selected][2] = y
+            self.dic_user[name_selected][3] = z
+            self.dic_user[name_selected][4] = x_rot
+            self.dic_user[name_selected][5] = y_rot
+            self.dic_user[name_selected][6] = z_rot
+            return True
+        except OperationalError as o:
+            print(str(o))
+            self.err_log.append_err(111201, str(o))
+            return False
+        except Exception as e:
+            print(e)
+            self.err_log.append_err(111202, "更新新工具平移变换错误：" + str(e))
+            return False
+        finally:
+            cursor.close()
+            conn.close()
 
     # 函数功能描述:机器人点动
     # uint8_t ref - 0-关节点动, 2-基坐标系下点动, 4-工具坐标系下点动, 8-工件坐标系下点动
@@ -1066,7 +1307,7 @@ class FuncFrRos2(Node):
                 work_space_temp = 2
 
             cmd_str = "StartJOG(" + str(work_space_temp) + ',' + str(nb) + ',' + str(direct) + ',' + str(
-                self.JOG_vel) + ')'
+                self.speed) + ')'
             self.req.cmd_str = cmd_str
             # 等待服务器响应
             if not self.cli.wait_for_service(timeout_sec=5.0):
@@ -1134,7 +1375,7 @@ class FuncFrRos2(Node):
     #关节移动指令
     #24
     def MoveJoint(self,point_name,speed = 30,acc = 30,blendT = -1,offset_j1=0,offset_j2=0,
-                    offset_j3=0,offset_j4=0,offset_j5=0,offset_j6=0):
+                    offset_j3=0,offset_j4=0,offset_j5=0,offset_j6=0,block=True):
         try:
             point_values = self.dic_point[point_name]
             tool = point_values[1]
@@ -1167,9 +1408,9 @@ class FuncFrRos2(Node):
                 self.err_log.append_err(112401, "MoveJoint，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
 
-            #等待运动结束
+            #阻塞直到运动结束
             count_motion_done = 0
-            while True:
+            while block:
                 if self.fr_state.robot_motion_done == 1:
                     break
                 else:
@@ -1186,16 +1427,16 @@ class FuncFrRos2(Node):
             self.err_log.append_err(112403,"MoveJoint指令错误，点位名称在字典中不存在")
             return False
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("MoveJoint指令错误，请检查参数")
-            self.err_log.append_err(112402, "MoveJoint指令错误，请检查参数")
+            self.err_log.append_err(112402, "MoveJoint指令错误:"+str(e))
             return False
 
     # 关节直线移动指令
     # 24
     def MoveL_Joint(self, point_name, speed=30, acc=30, blendT=-1, offset_j1=0, offset_j2=0,
-                  offset_j3=0, offset_j4=0, offset_j5=0, offset_j6=0):
+                  offset_j3=0, offset_j4=0, offset_j5=0, offset_j6=0, block=True):
         try:
             point_values = self.dic_point[point_name]
             tool = point_values[1]
@@ -1228,9 +1469,9 @@ class FuncFrRos2(Node):
                 self.err_log.append_err(112401,
                                         "MoveL_Joint，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
-            # 等待运动结束
+            # 阻塞直到运动结束
             count_motion_done = 0
-            while True:
+            while block:
                 if self.fr_state.robot_motion_done == 1:
                     break
                 else:
@@ -1248,17 +1489,17 @@ class FuncFrRos2(Node):
             self.err_log.append_err(112403, "MoveL_Joint指令错误，点位名称在字典中不存在")
             return False
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("MoveL_Joint指令错误，请检查参数")
-            self.err_log.append_err(112402, "MoveL_Joint指令错误，请检查参数")
+            self.err_log.append_err(112402, "MoveL_Joint指令错误"+str(e))
             return False
 
     # 关节移动指令
     #
     # 24
     def MovePose(self, point_name, speed=30, acc=30, blendT=-1, offset_x=0, offset_y=0,
-                  offset_z=0, offset_xRot=0, offset_yRot=0, offset_zRot=0):
+                  offset_z=0, offset_xRot=0, offset_yRot=0, offset_zRot=0,block=True):
         try:
             #将数据从tf中获取并转换坐标系之间的变换
             #从点表中获取点位信息
@@ -1343,9 +1584,9 @@ class FuncFrRos2(Node):
                 self.err_log.append_err(112401,
                                         "MovePose，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
-            # 等待运动结束
+            # 阻塞直到运动结束
             count_motion_done = 0
-            while True:
+            while block:
                 if self.fr_state.robot_motion_done == 1:
                     break
                 else:
@@ -1363,16 +1604,16 @@ class FuncFrRos2(Node):
             self.err_log.append_err(112403, "MovePose指令错误，点位名称在字典中不存在")
             return False
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("MovePose指令错误，请检查参数")
-            self.err_log.append_err(112402, "MovePose指令错误，请检查参数")
+            self.err_log.append_err(112402, "MovePose指令错误:"+str(e))
             return False
 
     # 关节移动指令
     # 24
     def MoveL_Pose(self, point_name, speed=30, acc=30, blendT=-1, offset_x=0, offset_y=0,
-                 offset_z=0, offset_xRot=0, offset_yRot=0, offset_zRot=0):
+                 offset_z=0, offset_xRot=0, offset_yRot=0, offset_zRot=0,block=True):
         try:
             # 将数据从tf中获取并转换坐标系之间的变换
             # 从点表中获取点位信息
@@ -1458,9 +1699,9 @@ class FuncFrRos2(Node):
                 self.err_log.append_err(112401,
                                         "MoveL_Pose，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
-            # 等待运动结束
+            # 阻塞直到运动结束
             count_motion_done = 0
-            while True:
+            while block:
                 if self.fr_state.robot_motion_done == 1:
                     break
                 else:
@@ -1478,10 +1719,10 @@ class FuncFrRos2(Node):
             self.err_log.append_err(112403, "MoveL_Pose指令错误，点位名称在字典中不存在")
             return False
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("MoveL_Pose指令错误，请检查参数")
-            self.err_log.append_err(112402, "MoveL_Pose指令错误，请检查参数")
+            self.err_log.append_err(112402, "MoveL_Pose指令错误:"+str(e))
             return False
 
     # 停止运动
@@ -1508,10 +1749,10 @@ class FuncFrRos2(Node):
                 return False
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("StopMotion指令错误，请检查参数")
-            self.err_log.append_err(113003, "StopMotion指令错误，请检查参数")
+            self.err_log.append_err(113003, "StopMotion指令错误:"+str(e))
             return False
 
     # 机械臂使能开关
@@ -1542,10 +1783,10 @@ class FuncFrRos2(Node):
             self.fr_enable = state
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("RobotEnable指令错误，请检查参数")
-            self.err_log.append_err(113203, "RobotEnable指令错误，请检查参数")
+            self.err_log.append_err(113203, "RobotEnable指令错误:"+str(e))
             return False
 
     # 函数功能描述:模式切换
@@ -1575,10 +1816,10 @@ class FuncFrRos2(Node):
             self.fr_mode = state
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("Mode指令错误，请检查参数")
-            self.err_log.append_err(113303, "Mode指令错误，请检查参数")
+            self.err_log.append_err(113303, "Mode指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置当前模式下机械臂速度
@@ -1610,10 +1851,10 @@ class FuncFrRos2(Node):
             self.speed = vel
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetSpeed指令错误，请检查参数")
-            self.err_log.append_err(113403, "SetSpeed指令错误，请检查参数")
+            self.err_log.append_err(113403, "SetSpeed指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置末端负载重量
@@ -1643,10 +1884,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e :
             # 处理特定异常的代码
             print("SetLoadWeight指令错误，请检查参数")
-            self.err_log.append_err(113503, "SetLoadWeight指令错误，请检查参数")
+            self.err_log.append_err(113503, "SetLoadWeight指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置末端负载质心坐标
@@ -1676,10 +1917,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetLoadCoord指令错误，请检查参数")
-            self.err_log.append_err(113603, "SetLoadCoord指令错误，请检查参数")
+            self.err_log.append_err(113603, "SetLoadCoord指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置机器人安装方式
@@ -1709,10 +1950,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetRobotInstallPos指令错误，请检查参数")
-            self.err_log.append_err(113703, "SetRobotInstallPos指令错误，请检查参数")
+            self.err_log.append_err(113703, "SetRobotInstallPos指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置机器人安装角度,自由安装
@@ -1743,10 +1984,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetRobotInstallAngle指令错误，请检查参数")
-            self.err_log.append_err(113803, "SetRobotInstallAngle指令错误，请检查参数")
+            self.err_log.append_err(113803, "SetRobotInstallAngle指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置机器人碰撞等级
@@ -1777,10 +2018,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetAnticollision指令错误，请检查参数")
-            self.err_log.append_err(113903, "SetAnticollision指令错误，请检查参数")
+            self.err_log.append_err(113903, "SetAnticollision指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置碰撞后策略
@@ -1810,10 +2051,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetCollisionStrategy指令错误，请检查参数")
-            self.err_log.append_err(114003, "SetCollisionStrategy指令错误，请检查参数")
+            self.err_log.append_err(114003, "SetCollisionStrategy指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置正限位,注意设置值必须在硬限位范围内
@@ -1845,10 +2086,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetLimitPositive指令错误，请检查参数")
-            self.err_log.append_err(114103, "SetLimitPositive指令错误，请检查参数")
+            self.err_log.append_err(114103, "SetLimitPositive指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置负限位,注意设置值必须在硬限位范围内
@@ -1880,10 +2121,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e :
             # 处理特定异常的代码
             print("SetLimitNegative指令错误，请检查参数")
-            self.err_log.append_err(114203, "SetLimitNegative指令错误，请检查参数")
+            self.err_log.append_err(114203, "SetLimitNegative指令错误:"+str(e))
             return False
 
 
@@ -1913,10 +2154,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("ResetAllError指令错误，请检查参数")
-            self.err_log.append_err(114303, "ResetAllError指令错误，请检查参数")
+            self.err_log.append_err(114303, "ResetAllError指令错误"+str(e))
             return False
 
     #外设控制
@@ -1948,10 +2189,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("ActGripper指令错误，请检查参数")
-            self.err_log.append_err(114403, "ActGripper指令错误，请检查参数")
+            self.err_log.append_err(114403, "ActGripper指令错误:"+str(e))
             return False
 
     #函数功能描述: 控制夹爪
@@ -1982,10 +2223,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("MoveGripper指令错误，请检查参数")
-            self.err_log.append_err(114503, "MoveGripper指令错误，请检查参数")
+            self.err_log.append_err(114503, "MoveGripper指令错误:"+str(e))
             return False
 
     # IO控制
@@ -2017,10 +2258,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetDO指令错误，请检查参数")
-            self.err_log.append_err(114603, "SetDO指令错误，请检查参数")
+            self.err_log.append_err(114603, "SetDO指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置工具数字量输出
@@ -2051,10 +2292,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetToolDO指令错误，请检查参数")
-            self.err_log.append_err(114703, "SetToolDO指令错误，请检查参数")
+            self.err_log.append_err(114703, "SetToolDO指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置控制箱模拟量输出
@@ -2085,10 +2326,10 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e:
             # 处理特定异常的代码
             print("SetAO指令错误，请检查参数")
-            self.err_log.append_err(114803, "SetAO指令错误，请检查参数")
+            self.err_log.append_err(114803, "SetAO指令错误:"+str(e))
             return False
 
     # 函数功能描述:设置工具模拟量输出
@@ -2119,8 +2360,8 @@ class FuncFrRos2(Node):
 
             return True
 
-        except:
+        except Exception as e :
             # 处理特定异常的代码
             print("SetToolAO指令错误，请检查参数")
-            self.err_log.append_err(114903, "SetToolAO指令错误，请检查参数")
+            self.err_log.append_err(114903, "SetToolAO指令错误:"+str(e))
             return False

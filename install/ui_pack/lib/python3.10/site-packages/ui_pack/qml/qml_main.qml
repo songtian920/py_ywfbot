@@ -581,11 +581,8 @@ Rectangle
         {
             id: stackLayout_win
             anchors.fill: parent
-
             visible: true
-
             currentIndex: 0
-
 
             //主页窗体
             Rectangle
@@ -1102,11 +1099,22 @@ Rectangle
         //手臂工具坐标表
         signal_obj.signal_appendRow_tableModel_frTool.connect(robotToolTable.appendRow_tableModel)
         signal_obj.signal_insertNewRowToTM_DB_frTool.connect(robotToolTable.insertNewRowToTM_DB)
+        //新工具示教点位 返回数据
         signal_obj.signal_teachPoint_calibTool_callBack.connect(robotToolTable.teach_point_callBack_toolTable)
+        //新工具计算 返回数据
+        signal_obj.signal_calculateTool_calibTool_callback.connect(robotToolTable.calculate_tool_callback_toolTable)
+        //新工具结果回传到 界面显示
+        signal_obj.signal_updateToolData_calibTool_callback.connect(robotToolTable.updateToolData_calibTool_callback)
 
         //手臂用户坐标表
         signal_obj.signal_appendRow_tableModel_frUser.connect(robotUserTable.appendRow_tableModel)
         signal_obj.signal_insertNewRowToTM_DB_frUser.connect(robotUserTable.insertNewRowToTM_DB)
+        //新用户示教点位 返回数据
+        signal_obj.signal_teachPoint_calibUser_callBack.connect(robotUserTable.teach_point_callBack_userTable)
+        //新用户计算结果 回传到界面
+        signal_obj.signal_calculateUser_calibUser_callback.connect(robotUserTable.calculate_user_callback_userTable)
+        //新用户结果回传到 界面显示
+        signal_obj.signal_updateUserData_calibUser_callback.connect(robotUserTable.updateUserData_calibUser_callback)
 
         //robot_manual信号绑定到主信号
         robot_manual.signal_test.connect(mySignal)  //测试
@@ -1130,6 +1138,7 @@ Rectangle
         robotToolTable.signal_updateDbRow_robotToolList.connect(signal_updateDbRow_robotToolList_main)
         robotToolTable.signal_insert_row_robotToolList.connect(signal_insert_row_robotToolList_main)
         robotToolTable.signal_refresh_DBToolToTableView.connect(signal_refresh_DBToolToTableView_main)
+        //新工具点位示教
         robotToolTable.signal_teach_tool_point_toolTable.connect(signal_teach_tool_point_main)
         //计算新工具平移变换信号绑定
         robotToolTable.signal_calculate_tool_trans_toolTable.connect(signal_calculate_tool_trans_main)
@@ -1145,6 +1154,12 @@ Rectangle
         robotUserTable.signal_updateDbRow_robotUserList.connect(signal_updateDbRow_robotUserList_main)
         robotUserTable.signal_insert_row_robotUserList.connect(signal_insert_row_robotUserList_main)
         robotUserTable.signal_refresh_DBUserToTableView.connect(signal_refresh_DBUserToTableView_main)
+        //新用户点位示教 信号绑定
+        robotUserTable.signal_teach_user_point_userTable.connect(signal_teach_user_point_userTable_main)
+        //计算新用户位姿变换
+        robotUserTable.signal_calculate_user_coord_userTable.connect(signal_calculate_user_coord_userTable_main)
+        //更新新用户在基坐标系位姿
+        robotUserTable.signal_update_user_coord_userTable.connect(signal_update_user_coord_userTable_main)
 
     }
 
@@ -1259,11 +1274,11 @@ Rectangle
     //计算新工具平移变换信号绑定
     signal signal_calculate_tool_trans_main()
     //将新工具平移变换 更新到界面及数据库信号绑定
-    signal signal_update_tool_trans_main()
+    signal signal_update_tool_trans_main(string name_tool)
     //计算工具旋转变换
     signal signal_calculate_tool_rotate_main()
     //更新工具旋转变换
-    signal signal_update_tool_rotate_main()
+    signal signal_update_tool_rotate_main(string name_tool)
 
 
     //robot用户坐标系表qml信号绑定
@@ -1275,6 +1290,12 @@ Rectangle
     signal signal_insert_row_robotUserList_main(string name_pt)
     //数据库刷新到 tableView信号
     signal signal_refresh_DBUserToTableView_main()
+    //示教点位
+    signal signal_teach_user_point_userTable_main(int point_index)
+    //计算新用户位姿变换
+    signal signal_calculate_user_coord_userTable_main()
+    //更新新用户在基坐标系位姿
+    signal signal_update_user_coord_userTable_main(string name_tool)
 
 }
 

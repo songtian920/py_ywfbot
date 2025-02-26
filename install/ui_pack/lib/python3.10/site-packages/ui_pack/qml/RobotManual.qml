@@ -429,7 +429,6 @@ ColumnLayout{
 
                     // 鼠标悬浮时的背景色变化
                     MouseArea {
-
                         anchors.fill: parent
                         hoverEnabled: true // 设置为true以启用悬停事件
                         onPressed: {

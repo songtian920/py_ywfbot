@@ -27,6 +27,7 @@ ui_pack/qml/RobotPointsTable.qml
 ui_pack/qml/RobotStatusDisp.qml
 ui_pack/qml/RobotToolCalib.qml
 ui_pack/qml/RobotToolTable.qml
+ui_pack/qml/RobotUserCalib.qml
 ui_pack/qml/RobotUserTable.qml
 ui_pack/qml/qml_main.qml
 ui_pack/qml/svg_icons/active_menu.svg

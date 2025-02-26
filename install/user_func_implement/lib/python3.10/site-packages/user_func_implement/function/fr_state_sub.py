@@ -105,9 +105,9 @@ class FrStateSub(Node):
         t.transform.translation.x = msg.cart_x_cur_pos/1000  #毫米mm单位转化为米单位m
         t.transform.translation.y = msg.cart_y_cur_pos/1000  #毫米mm单位转化为米单位m
         t.transform.translation.z = msg.cart_z_cur_pos/1000  #毫米mm单位转化为米单位m
-        x_rot_rad = msg.cart_a_cur_pos*3.1415926/180  #角度转弧度
-        y_rot_rad = msg.cart_b_cur_pos*3.1515926/180  #角度转弧度
-        z_rot_rad = msg.cart_c_cur_pos*3.1515926/180  #角度转弧度
+        x_rot_rad = msg.cart_a_cur_pos * math.pi/180  #角度转弧度
+        y_rot_rad = msg.cart_b_cur_pos * math.pi/180  #角度转弧度
+        z_rot_rad = msg.cart_c_cur_pos * math.pi/180  #角度转弧度
 
         # For the same reason, turtle can only rotate around one axis
         # and this why we set rotation in x and y to 0 and obtain
@@ -137,9 +137,9 @@ class FrStateSub(Node):
                     position_trans[0] = position_temp[0] * 1000
                     position_trans[1] = position_temp[1] * 1000
                     position_trans[2] = position_temp[2] * 1000
-                    position_trans[3] = position_temp[3] * 180 / 3.1415926
-                    position_trans[4] = position_temp[4] * 180 / 3.1415926
-                    position_trans[5] = position_temp[5] * 180 / 3.1415926
+                    position_trans[3] = position_temp[3] * 180 / math.pi
+                    position_trans[4] = position_temp[4] * 180 / math.pi
+                    position_trans[5] = position_temp[5] * 180 / math.pi
 
             # 尝试执行的代码
 

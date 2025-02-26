@@ -172,6 +172,7 @@ class Components:
                     # 命令赋初始值
                     self.commandScript.set_command("start")
                     self.__manuel_auto_status = True
+                    self.FuncFrRos2.Mode(0) #自动
                 else:
                     print("初始化未成功或有异常，不能切换自动，请完成初始化并清除异常")
                     #报警处理
@@ -183,15 +184,14 @@ class Components:
                 # 命令值清空
                 self.commandScript.set_command("")
                 #todo 向各个模块发送终止命令
-
                 #状态 切换成手动
                 self.__manuel_auto_status = False
+                self.FuncFrRos2.Mode(1)  # 手动
 
             # 给界面发送 手动自动状态信号
             self.Send_signal.manuel_auto_signal.emit(self.__manuel_auto_status)
             #反馈手自动状态
             return self.__manuel_auto_status
-
 
     #启动暂停切换开关
     def start_pause_switch(self,mode:bool):
@@ -282,12 +282,16 @@ class SendSignal(QObject):
 
     # 机器人工具表数据回传
     # 更新一行到tableView
-    signal_appendRow_tableModel_frTool = Signal(list)
-    signal_insertNewRowToTM_DB_frTool = Signal(str)
-    signal_teachPoint_calibTool_callBack = Signal(list,int)
-
+    signal_appendRow_tableModel_frTool = Signal(list)   #工具添加一行数据
+    signal_insertNewRowToTM_DB_frTool = Signal(str)     #工具插入一行空白行
+    signal_teachPoint_calibTool_callBack = Signal(list,int)     #新工具标定 示教点位回传,给点位索引0-2是平移数据，3-5是旋转数据
+    signal_calculateTool_calibTool_callback = Signal(list,str)        #新工具计算结果回传, 给定类型translate,rotate
+    signal_updateToolData_calibTool_callback = Signal(list,str)   #保存更新新工具数据后回传数据到界面，给定类型translate,rotate
 
     # 机器人工具表数据回传
     # 更新一行到tableView
     signal_appendRow_tableModel_frUser = Signal(list)
     signal_insertNewRowToTM_DB_frUser = Signal(str)
+    signal_teachPoint_calibUser_callBack = Signal(list, int)  # 新用户标定 示教点位回传,给点位索引0-2
+    signal_calculateUser_calibUser_callback = Signal(list)  # 新工具计算结果回传, 给定类型translate,rotate
+    signal_updateUserData_calibUser_callback = Signal(list)  # 保存更新新工具数据后回传数据到界面，给定类型translate,rotate

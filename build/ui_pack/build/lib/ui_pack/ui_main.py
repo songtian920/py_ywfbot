@@ -120,6 +120,7 @@ def main():
             _components.errListUser.append_err(2, "fr机器人连接失败，请检查控制器是否连接fr机器人，及电源是否打开")
             break
 
+    time.sleep(1)
     # 机器人初始设置
     func_fr_ros2.Mode(1)  #手动模式
     func_fr_ros2.RobotEnable(1)  #手臂上电
