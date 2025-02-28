@@ -28,7 +28,12 @@ user_func_implement/sqlite/__init__.py
 user_func_implement/sqlite/createFRPointsDatabaseScript.py
 user_func_implement/sqlite/createFRToolDatabaseScript.py
 user_func_implement/sqlite/createFRUserDatabaseScript.py
+user_func_implement/sqlite/create_FR_DI_DbTable_Script.py
+user_func_implement/sqlite/create_FR_DO_DbTable_Script.py
+user_func_implement/sqlite/del_table_FR_DIO_script.py
 user_func_implement/sqlite/del_table_script.py
 user_func_implement/sqlite/fr_data.db
 user_func_implement/sqlite/get_pointList_script.py
+user_func_implement/sqlite/insert_ROBOT_DI_DB_script.py
+user_func_implement/sqlite/insert_ROBOT_DO_DB_script.py
 user_func_implement/sqlite/insert_pointData_script.py

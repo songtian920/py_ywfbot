@@ -28,7 +28,7 @@ Rectangle{
         anchors.left:parent.left
         anchors.leftMargin:50
 
-        //文本框
+        //按钮功能区
         Rectangle {
             width: 200
             height: 30

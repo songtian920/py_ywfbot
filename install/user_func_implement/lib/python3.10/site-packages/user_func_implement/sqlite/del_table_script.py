@@ -7,7 +7,7 @@ def del_table():
     cursor = conn.cursor()
 
     # 定义要删除的表名
-    table_name = 'fr_pointData'
+    table_name = 'fr_DI_tags'
 
     # 执行删除表的SQL语句
     cursor.execute(f'DROP TABLE IF EXISTS {table_name}')

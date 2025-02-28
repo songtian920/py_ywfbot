@@ -389,7 +389,6 @@ Rectangle
             }
         }
 
-
         //窗口控制按钮
         RowLayout
         {
@@ -640,7 +639,6 @@ Rectangle
                                 }
                             }
                         }
-
                     }
 
                     //启动
@@ -726,8 +724,8 @@ Rectangle
                 }
 
                 //机器人状态信息显示
-                RobotStatusDisp{
-                    id: robotStatusDisp_panel
+                AmrStatusDisp{
+                    id: amrStatusDisp
                     anchors.top: parent.top
                     anchors.topMargin: 15
                     anchors.right: parent.right
@@ -735,16 +733,84 @@ Rectangle
                 }
             }
 
-            //手动窗体
+            //manual_win窗体
             Rectangle
             {
-                //id: win_home
-                //color: "#3c4454"
-                color: "red"
+                id: manualControl_win
+                color: "#3c4454"
+                //color: "blue"
                 radius: 10
                 width: parent.width
                 height: parent.height
 
+                //选择按钮区
+                Row{
+                    id: select_btn_row
+                    anchors.top: parent.top
+                    anchors.topMargin:10
+                    anchors.left:parent.left
+                    anchors.leftMargin:100
+                    spacing:60
+                    //io控制 手臂io控制
+                    MyButton
+                    {
+                        id: robotIo_btn
+                        width: 150
+                        height: 50
+                        color: "#2c313c"
+                        buttonText: "手臂IO点"
+                        imageSourcePath:"svg_icons/robot.jpg"
+                        MouseArea   //鼠标事件
+                        {
+                            anchors.fill: parent
+                            onClicked: {
+                                // 按钮点击处理逻辑
+                                robotIo_btn.color = "#2c313c"
+                                amrIo_btn.color = "#1b1e23"
+                                manualControl_StackLayout.currentIndex=0
+                            }
+                        }
+                    }
+                    //amrIO控制
+                    MyButton
+                    {
+                        id:amrIo_btn
+                        width: 150
+                        height: 50
+
+                        buttonText: "车体IO点" // 设置按钮文本为 "1"
+                        imageSourcePath:"svg_icons/robot.jpg"
+                        MouseArea   //鼠标事件
+                        {
+                            anchors.fill: parent
+                            onClicked: {
+                                // 按钮点击处理逻辑
+                                robotIo_btn.color = "#1b1e23"
+                                amrIo_btn.color = "#2c313c"
+                            }
+                        }
+                    }
+                }
+                //抽屉布局
+                StackLayout
+                {
+                    id: manualControl_StackLayout
+                    anchors.top: select_btn_row.bottom
+                    anchors.topMargin: 10
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    visible: true
+                    currentIndex: 0
+
+                    //robot io窗口
+                    RobotIoSet{
+                        id: robotIoSet_win
+                        //anchors.fill: parent
+                    }
+                }
             }
 
             //数据设置窗体
@@ -754,6 +820,7 @@ Rectangle
                 radius: 10
                 width: parent.width
                 height: parent.height
+                //选择控制按钮
                 Row{
                     id: row_btn_dataSet
                     anchors.top: parent.top
@@ -767,7 +834,7 @@ Rectangle
                         id: btn_robotPoint_rect
                         width: 150
                         height: 50
-
+                        color: "#2c313c"
                         buttonText: "手臂点位" // 设置按钮文本为 "1"
                         imageSourcePath:"svg_icons/robot.jpg"
                         MouseArea   //鼠标事件
@@ -1089,6 +1156,9 @@ Rectangle
         signal_obj.signal_robot_pointsName_list.connect(robot_manual.load_pointsName_list)
         signal_obj.signal_robot_pointsComment_list.connect(robot_manual.load_pointsComment_list)
 
+        //AmrStatusDisp
+        signal_obj.signal_robotSpeed_callback.connect(amrStatusDisp.robotSpeed_callback)
+
         //手臂点表信号添加
         //手臂点表 添加数据
         signal_obj.signal_appendRow_tableModel_frPoint.connect(robotPointTable.appendRow_tableModel)
@@ -1116,6 +1186,9 @@ Rectangle
         //新用户结果回传到 界面显示
         signal_obj.signal_updateUserData_calibUser_callback.connect(robotUserTable.updateUserData_calibUser_callback)
 
+        //robot manual
+        signal_obj.signal_update_IO_state_robotDIO.connect(robotIoSet_win.update_IO_state)
+
         //robot_manual信号绑定到主信号
         robot_manual.signal_test.connect(mySignal)  //测试
         robot_manual.signal_StartJOG.connect(signal_StartJOG_main)  //点动开始信号
@@ -1125,6 +1198,10 @@ Rectangle
         robot_manual.signal_userChange.connect(signal_userChange_main)  //用户坐标系
         robot_manual.signal_pointMove.connect(signal_pointMove_main)  //点动运动坐标
         robot_manual.signal_robotEnable.connect(signal_robotEnable_main)  //伺服上电断电信号
+
+        //AmrStatusDisp信号绑定到主信号
+        amrStatusDisp.signal_robotSpeed.connect(signal_robotSpeed_main)   //手臂速度值改变信号绑定
+
 
         //robot 点表信号绑定到主信号
         robotPointTable.signal_deleteDbRow_robotPointList.connect(signal_deleteDbRow_robotPointList_main)
@@ -1162,6 +1239,11 @@ Rectangle
         //更新新用户在基坐标系位姿
         robotUserTable.signal_update_user_coord_userTable.connect(signal_update_user_coord_userTable_main)
 
+        //robotDIOSet手臂IO
+        //robot SetDo
+        robotIoSet_win.signal_SetDO.connect(signal_SetDO_RobotIoSet_main)
+        //robot tag更新
+        robotIoSet_win.signal_update_RobotDIO_tag.connect(signal_update_RobotDIO_tag_main)
     }
 
     //启动暂停回调函数
@@ -1247,6 +1329,8 @@ Rectangle
     signal signal_pointMove_main(string pointName, string moveType,int exeFlag)
     //伺服上电断电
     signal signal_robotEnable_main(int state_robot)
+    //改变robot速度值
+    signal signal_robotSpeed_main(double speed_val)
 
     //robot点表qml信号绑定
     //删除
@@ -1261,7 +1345,6 @@ Rectangle
     signal signal_point_teach_main(string point_name)
     //点位执行 joint运动 flag为1时执行，为0时，终止运动
     signal signal_execute_point_main(string point_name,int flag)
-
 
     //robot工具坐标系表qml信号绑定
     //删除
@@ -1283,7 +1366,6 @@ Rectangle
     //更新工具旋转变换
     signal signal_update_tool_rotate_main(string name_tool)
 
-
     //robot用户坐标系表qml信号绑定
     //删除
     signal signal_deleteDbRow_robotUserList_main(string name_str)
@@ -1299,6 +1381,11 @@ Rectangle
     signal signal_calculate_user_coord_userTable_main()
     //更新新用户在基坐标系位姿
     signal signal_update_user_coord_userTable_main(string name_tool)
+
+    //RobotIoSet
+    signal signal_SetDO_RobotIoSet_main(int id_, int status_)
+    //更新输入输出标签Robot tag
+    signal signal_update_RobotDIO_tag_main(string type_,string id_,string tag_)
 
 }
 

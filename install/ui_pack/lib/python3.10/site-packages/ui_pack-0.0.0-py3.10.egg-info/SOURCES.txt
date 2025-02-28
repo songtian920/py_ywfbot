@@ -18,13 +18,14 @@ ui_pack/__init__.py
 ui_pack/components.py
 ui_pack/ui_main.py
 ui_pack/临时测试.py
+ui_pack/qml/AmrStatusDisp.qml
 ui_pack/qml/Demo_VirtualKeyboard.qml
 ui_pack/qml/MyButton.qml
 ui_pack/qml/MyButtonIcon.qml
 ui_pack/qml/MyButtonText.qml
+ui_pack/qml/RobotIoSet.qml
 ui_pack/qml/RobotManual.qml
 ui_pack/qml/RobotPointsTable.qml
-ui_pack/qml/RobotStatusDisp.qml
 ui_pack/qml/RobotToolCalib.qml
 ui_pack/qml/RobotToolTable.qml
 ui_pack/qml/RobotUserCalib.qml

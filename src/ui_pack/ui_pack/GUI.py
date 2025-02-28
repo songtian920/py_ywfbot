@@ -12,66 +12,10 @@ import asyncio
 import os
 import math
 
-#
-# class TableModel(QAbstractTableModel):
-#     def __init__(self, data, headers):
-#         super().__init__()
-#         self._data = data
-#         self._headers = headers
-#
-#     def rowCount(self, parent=QModelIndex()):
-#         return len(self._data)
-#
-#     def columnCount(self, parent=QModelIndex()):
-#         return len(self._headers)
-#
-#     def data(self, index, role=Qt.DisplayRole):
-#         if role == Qt.DisplayRole:
-#             return self._data[index.row()][index.column()]
-#         return None
-#
-#     def headerData(self, section, orientation, role=Qt.DisplayRole):
-#         if role == Qt.DisplayRole and orientation == Qt.Horizontal:
-#             return self._headers[section]
-#         return None
-#
-#     def setData(self, index, value, role=Qt.EditRole):
-#         if role == Qt.EditRole:
-#             self._data[index.row()][index.column()] = value
-#             # 触发数据变化信号：通知视图刷新指定单元格
-#             self.dataChanged.emit(index, index, [role])
-#             return True
-#         return False
-#
-#     def roleNames(self):
-#         # 定义角色名，QML 通过角色名访问数据
-#         roles = {
-#             Qt.DisplayRole: b"display"
-#         }
-#         return roles
-#
-#     def insertRow(self, row, data, parent=QModelIndex()):
-#         self.beginInsertRows(parent, row, row)
-#         self._data.insert(row, data)
-#         self.endInsertRows()
-#         return True
-#     def append(self, row, data, parent=QModelIndex()):
-#         self.beginInsertRows(parent, row, row)
-#         #self._data.insert(row, data)
-#         self._data.append(data)
-#         self.endInsertRows()
-#         return True
-#
-#     def removeRow(self, row, parent=QModelIndex()):
-#         self.beginRemoveRows(parent, row, row)
-#         self._data.pop(row)
-#         self.endRemoveRows()
-#         return True
-
 
 class YwfWidget:
     # 初始化函数
-    def __init__(self):
+    def __init__(self,_components):
         #super().__init__()  # 调用超类的构造函数
         self.view = None
         self.engine = None
@@ -79,13 +23,10 @@ class YwfWidget:
         self.qml = None
         self.signal_obj = None
         self.root_object = None
-        self.components = None
+        self.components = _components
         self.win_open_success = False
         print("初始化")
 
-    #配置参数
-    def config(self,_components:Components):
-        self.components = _components
 
     # 定义槽函数
     #主界面 手动自动切换
@@ -93,8 +34,11 @@ class YwfWidget:
     def manuel_auto_switch(self,mode:bool):
         #print(mode)
         try:
-            # mode true为自动
+            # mode true为自动 false为手动
+            #手自动模式切换
             self.components.manuel_auto_switch(mode)
+            #切换后为了安全，将速度设置为10%
+            self.components.FuncFrRos2.SetSpeed(10.0)
         except Exception as e:
             self.components.errListUser.append_err(112601, "设置Mode错误："+str(e))
 
@@ -177,6 +121,14 @@ class YwfWidget:
             #停止运动
             self.components.FuncFrRos2.StopMotion()
             pass
+
+    #AmrStatusDisp状态显示
+    @Slot()
+    def robotSetSpeed(self,speed_val):
+        try:
+            self.components.FuncFrRos2.SetSpeed(speed_val)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "robotSetSpeed错误："+str(e))
 
     #手臂点表删除一行
     @Slot()
@@ -299,9 +251,9 @@ class YwfWidget:
 
             #计算平移变换结果 回传到界面
             list_pose = [0.0,0.0,0.0]
-            list_pose[0] = round(float(x),6)
-            list_pose[1] = round(float(y),6)
-            list_pose[2] = round(float(z),6)
+            list_pose[0] = round(float(x),3)
+            list_pose[1] = round(float(y),3)
+            list_pose[2] = round(float(z),3)
             self.signal_obj.signal_calculateTool_calibTool_callback.emit(list_pose,"translate")
         except Exception as e:
             self.components.errListUser.append_err(112601, "calculate_tool_trans错误:" + str(e))
@@ -333,9 +285,9 @@ class YwfWidget:
             x_rotate,y_rotate,z_rotate = self.components.FuncFrRos2.calib_rotate_tool(pose_toolInBase)
             # 计算平移变换结果 回传到界面
             list_pose = [0.0, 0.0, 0.0]
-            list_pose[0] = round(float(x_rotate), 6)
-            list_pose[1] = round(float(y_rotate), 6)
-            list_pose[2] = round(float(z_rotate), 6)
+            list_pose[0] = round(float(x_rotate), 3)
+            list_pose[1] = round(float(y_rotate), 3)
+            list_pose[2] = round(float(z_rotate), 3)
             self.signal_obj.signal_calculateTool_calibTool_callback.emit(list_pose, "rotate")
         except Exception as e:
             self.components.errListUser.append_err(112601, "calculate_tool_rotate错误:" + str(e))
@@ -414,12 +366,12 @@ class YwfWidget:
                 self.components.FuncFrRos2.calib_user_coord([point_o,point_x,point_y]))
             # 计算平移变换结果 回传到界面
             list_pose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            list_pose[0] = round(float(x), 6)
-            list_pose[1] = round(float(y), 6)
-            list_pose[2] = round(float(z), 6)
-            list_pose[3] = round(float(x_rotate), 6)
-            list_pose[4] = round(float(y_rotate), 6)
-            list_pose[5] = round(float(z_rotate), 6)
+            list_pose[0] = round(float(x), 3)
+            list_pose[1] = round(float(y), 3)
+            list_pose[2] = round(float(z), 3)
+            list_pose[3] = round(float(x_rotate), 3)
+            list_pose[4] = round(float(y_rotate), 3)
+            list_pose[5] = round(float(z_rotate), 3)
             self.signal_obj.signal_calculateUser_calibUser_callback.emit(list_pose)
         except Exception as e:
             self.components.errListUser.append_err(112601, "calculate_tool_rotate错误:" + str(e))
@@ -444,6 +396,26 @@ class YwfWidget:
         except Exception as e:
             self.components.errListUser.append_err(112601, "update_user_coord:" + str(e))
 
+    #manual
+    #robotSetDo
+    @Slot()
+    def robot_setDo(self,id_,status_):
+        try:
+            self.components.FuncFrRos2.SetDO(id_,status_)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "robot_setDo:" + str(e))
+
+    #robotIO save tag保存标签
+    @Slot()
+    def robot_save_DIO_Tag(self,type_,id_,status):
+        try:
+            if type_ == "input":
+                #更新输入坐标标签
+                self.components.FuncFrRos2.update_tag_robotDI(id_,status)
+            elif type_ == "output":
+                self.components.FuncFrRos2.update_tag_robotDO(id_,status)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "robot_save_DIO_Tag:" + str(e))
 
     #显示窗口
     def show_widget(self):
@@ -485,7 +457,7 @@ class YwfWidget:
         self.root_object.signal_manuel_auto_switch.connect(self.manuel_auto_switch)
         self.root_object.signal_start_pause_switch.connect(self.start_pause_switch)
         self.root_object.signal_clear_errorList.connect(self.clear_error_list)
-        #手臂手动
+        #手臂手动RobotManual
         self.root_object.signal_StartJOG_main.connect(self.StartJOG,Qt.QueuedConnection)  #开始JOG信号绑定 槽函数
         self.root_object.signal_StopJOG_main.connect(self.StopJOG)   #停止JOG信号绑定 槽函数
         self.root_object.signal_WorkSpaceChange_main.connect(self.ChangeWorkSpace)  #改变工作空间
@@ -493,6 +465,9 @@ class YwfWidget:
         self.root_object.signal_userChange_main.connect(self.ChangeFrUser)  #改变fr用户坐标系
         self.root_object.signal_pointMove_main.connect(self.pointMove_robotManual)  #点位运动执行
         self.root_object.signal_robotEnable_main.connect(self.robotEnable_robotManual)   #机器人使能
+
+        #AmrStatusDisp状态显示
+        self.root_object.signal_robotSpeed_main.connect(self.robotSetSpeed)  #机器人速度改变
 
         #手臂点表
         #删
@@ -544,8 +519,12 @@ class YwfWidget:
         #更新新用户在基坐标系位姿
         self.root_object.signal_update_user_coord_userTable_main.connect(self.update_user_coord)
 
-        #测试
-        #self.root_object.mySignal.connect(self.signal_subQml_test)
+        #manual
+        #手臂IO点控制
+        self.root_object.signal_SetDO_RobotIoSet_main.connect(self.robot_setDo)
+        #输入输出标签更新
+        self.root_object.signal_update_RobotDIO_tag_main.connect(self.robot_save_DIO_Tag)
+
         print("已打开")
         self.win_open_success = True
         app.exec()

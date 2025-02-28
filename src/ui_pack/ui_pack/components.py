@@ -14,76 +14,6 @@ import launch
 import launch_ros.actions
 from user_func_implement.function.func_tf2 import FuncTf2
 
-#
-# #错误处理类
-# class ErrorListUser:
-#
-#     # 错误编码规则  (模块号3位,0可以缺省) 001 + (函数号两位01) + (错误号2位)01
-#     # 初始化函数
-#     def __init__(self):
-#         print("ErrorUser初始化")
-#
-#         #报警信息 列表
-#         self.__err_list=[]
-#
-#         #报警日志
-#         self.__errLogger=get_logger()
-#
-#         # 异常状态
-#         self.errStatus = False
-#
-#         #反馈给界面的信号对象，从外部赋值
-#         self.Send_signal = None
-#
-#         #暂停主脚本运行方法 对象
-#         self.start_pause_switch = None
-#
-#     #获取日志logger引用
-#     def get_logger(self):
-#         # 获取当前日期字符串
-#         today = datetime.datetime.now().strftime("%Y-%m-%d")
-#         # 创建日志文件的路径，包含当前日期
-#         log_file_path = f"~/logs/error/{today}err.log"
-#         # 创建一个TimedRotatingFileHandler，每天轮转一次
-#         handler = TimedRotatingFileHandler(log_file_path, when="midnight")
-#         #
-#         logger_new = logging.getLogger('errorLog')
-#         logger_new.setLevel(logging.ERROR)
-#         # 将handler添加到logger中
-#         logger_new.addHandler(handler)
-#         #返回logger
-#         return logger_new
-#
-#
-#     #添加异常
-#     def append_err(self,err_code:int,mes:string):
-#         #状态切位异常
-#         self.errStatus=True
-#
-#         #报错后 暂停脚本运行
-#         self.start_pause_switch(False)
-#
-#         # 转换为字符串，格式为 YYYY-MM-DD HH:MM:SS
-#         str_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-#         #连接错误信息  时间 错误代码 错误信息
-#         err_mes=str_time+' 错误代码: '+str(err_code)+' '+mes
-#         #本地添加错误信息
-#         self.__err_list.append(err_mes)
-#         #异常日志存储错误信息
-#         self.__errLogger.error(err_mes)
-#         #给GUI发送添加异常信息 信号
-#         self.Send_signal.signal_errorMesAppend.emit(err_mes)
-#
-#
-#     #清除异常
-#     def clear_err(self):
-#         #清除报警
-#         self.errStatus = False
-#         self.__err_list.clear() #本地列表
-#         #界面清除显示界面
-#         self.Send_signal.signal_errorMesClear.emit()  # 清除界面报警信息
-#
-
 
 #部件库类
 #包含了 状态控制 异常处理日志 sqlite数据库  机械手臂API 运动底盘API GPIO 视觉API tcp_socket通讯 tcp_modbus通讯
@@ -246,16 +176,12 @@ class SendSignal(QObject):
     # 创建信号
     #主程序初始化完成
     init_success_signal = Signal(int)
-
     #手自动切换
     manuel_auto_signal = Signal(bool)
-
     #启动停止状态
     start_status_signal = Signal(bool)
-
     #错误信息添加
     signal_errorMesAppend = Signal(str)
-
     #错误清除
     signal_errorMesClear = Signal()
 
@@ -272,6 +198,9 @@ class SendSignal(QObject):
     signal_robot_pointsName_list = Signal(list)
     #点表的注释加载到机器人手动
     signal_robot_pointsComment_list = Signal(list)
+
+    #AmrStatusDisp
+    signal_robotSpeed_callback = Signal(float)
 
     #机器人点表数据回传
     #更新一行到tableView
@@ -295,3 +224,25 @@ class SendSignal(QObject):
     signal_teachPoint_calibUser_callBack = Signal(list, int)  # 新用户标定 示教点位回传,给点位索引0-2
     signal_calculateUser_calibUser_callback = Signal(list)  # 新工具计算结果回传, 给定类型translate,rotate
     signal_updateUserData_calibUser_callback = Signal(list)  # 保存更新新工具数据后回传数据到界面，给定类型translate,rotate
+
+    #机器人手动控制
+    #RobotDIO
+    signal_update_IO_state_robotDIO = Signal(list,list,list,list)
+
+#GUI显示开关状态，通过控制显示开关来决定哪些信号需要反馈，
+# 用于减小界面显示的运行开销
+class GuiDispState:
+    # 构造函数
+    def __init__(self):
+        print("CommandScript初始化")
+        #界面的类型 0：本地GUI，1：远程网络GUI
+        self.GUIType = 0  #默认本地GUI
+        #主界面状态显示开关AmrStatusDisp
+        self.mian_statusDisp_switch = True
+        #机器人状态显示RobotManual
+        self.RobotManualDisp_switch = False
+        #manualControl_win
+        self.manualControlDisp_switch = False
+        #
+
+

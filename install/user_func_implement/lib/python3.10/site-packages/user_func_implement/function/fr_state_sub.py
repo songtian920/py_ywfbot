@@ -22,6 +22,8 @@ from tf2_ros.transform_listener import TransformListener
 import transforms3d as tfs
 from .error_list import ErrorListUser
 from .func_tf2 import FuncTf2
+import struct
+
 
 class FrStateSub(Node):
     # 初始化函数
@@ -54,6 +56,11 @@ class FrStateSub(Node):
         self.user_selected = "fr_baseLink"  #手臂基坐标默认值
         # 工作空间 0-关节点动, 2-基坐标系下点动, 4-工具坐标系下点动, 8-工件坐标系下点动
         self.work_space = 0
+        #robotIO 列表
+        self.robotDI = [False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]
+        self.robotDO = [False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]
+        self.dic_robotDI = {}  #机器人输入标签
+        self.dic_robotDO = {}  #机器人输出标签
 
     # 从tf中获得当前指定坐标系坐标
     #单位是米m和弧度rad
@@ -75,21 +82,25 @@ class FrStateSub(Node):
             return True,position
         except TransformException as ex:
             self.err_log.append_err(112502, f'获取指定坐标系tf坐标错误：{ex}')
-        except :
-            self.err_log.append_err(112501, "获取指定坐标系tf坐标错误，请检查tf中是否存在指定坐标")
+        except Exception as e :
+            self.err_log.append_err(112501, "获取指定坐标系tf坐标错误:"+str(e))
             return False,[]
 
     #法奥手臂状态回调
     def fr_state_callback(self, msg):
-        # 信息更新到本地
-        self.fr_state_msg = msg  #所有信息更新
-        self.fr_prg_state = msg.prg_state   #程序运行状态更新
-        self.robot_motion_done = msg.robot_motion_done  #机器人运动到位
-        # 把选定的 tool0 in fr_baseLink tf发布出去
-        self.fr_baseTool_tf_broadcaster(msg)
-        # 状态更新并发布到界面显示
-        self.async_fr_state_send(msg)
-
+        try:
+            # 信息更新到本地
+            self.fr_state_msg = msg  #所有信息更新
+            self.fr_prg_state = msg.prg_state   #程序运行状态更新
+            self.robot_motion_done = msg.robot_motion_done  #机器人运动到位
+            # 把选定的 tool0 in fr_baseLink tf发布出去
+            self.fr_baseTool_tf_broadcaster(msg)
+            #将IO状态保存
+            self.DIO_state(msg)
+            # 状态更新并发布到界面显示
+            self.async_fr_state_send(msg)
+        except Exception as e:
+            self.err_log.append_err(112501, "fr_state_callback错误:" + str(e))
 
     #发布手臂的tf2关系
     def fr_baseTool_tf_broadcaster(self,msg):
@@ -117,10 +128,41 @@ class FrStateSub(Node):
         t.transform.rotation.x = q[1]
         t.transform.rotation.y = q[2]
         t.transform.rotation.z = q[3]
-
         # Send the transformation
         self.func_tf2.tf_broadcaster.sendTransform(t)
-        pass
+
+
+    def DIO_state(self,msg):
+        #输入 化16位整数
+        input_h = msg.dgt_input_h & 0xFF
+        input_l = msg.dgt_input_l & 0xFF
+        input_data = input_h<<8 | input_l
+        #输出 化16位整数
+        output_h = msg.dgt_output_h & 0xFF
+        output_l = msg.dgt_output_l & 0xFF
+        output_data = output_h<<8 | output_l
+
+        # 遍历输入 16位（0到15）
+        for i in range(0, 15, 1):  # 从最低位到最高位
+            # 使用位操作获取每一位的值，并转换为布尔值
+            bit = (input_data >> i) & 1
+            self.robotDI[i] = (bool(bit))
+
+        # 遍历输出 16位（0到15）
+        for i in range(0, 15, 1):  # 从最低位到最高位
+            # 使用位操作获取每一位的值，并转换为布尔值
+            bit = (output_data >> i) & 1
+            self.robotDO[i] = (bool(bit))
+        #构建空标签列表
+        tags_input = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        tags_output = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        #字典数据正常
+        if len(self.dic_robotDI.keys())==16 and len(self.dic_robotDO.keys())==16 :
+            for i in range(0,15,1):
+                tags_input[i] = self.dic_robotDI[str(i)]
+                tags_output[i] = self.dic_robotDO[str(i)]
+        #将输入输出状态回传给界面
+        self.send_signal.signal_update_IO_state_robotDIO.emit(self.robotDI,self.robotDO,tags_input,tags_output)
 
     #数据发送到界面
     def async_fr_state_send(self, msg):

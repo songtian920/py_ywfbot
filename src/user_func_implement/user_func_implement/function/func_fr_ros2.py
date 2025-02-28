@@ -78,6 +78,9 @@ class FuncFrRos2(Node):
         self.dic_tool = {}
         # 用户坐标系字典
         self.dic_user = {}
+        #robot DIO 标签字典
+        self.dic_robotDI = {}
+        self.dic_robotDO = {}
 
         #自定义工具坐标系标定临时变量
         self.tool_name_temp = ""
@@ -154,6 +157,22 @@ class FuncFrRos2(Node):
         if not self.send_Signal_load_pointNameComment_list():
             self.err_log.append_err(110209,
                                     "send_Signal_load_pointName_list发布用户坐标系键值发送给GUI RobotManual错误，请检查dic_point数据是否正确")
+            return False
+        #加载Robot DI表
+        if self.fr_load_DI_tags_FromDB():
+            #输入标签字典给状态监控
+            self.fr_state.dic_robotDI = self.dic_robotDI
+        else:
+            self.err_log.append_err(110209,
+                                    "fr_load_DI_tags_FromDB数据加载错误，请检查数据库数据中数据是否正确")
+            return False
+        # 加载Robot DO表
+        if self.fr_load_DO_tags_FromDB():
+            # 输出标签字典给状态监控
+            self.fr_state.dic_robotDO = self.dic_robotDO
+        else:
+            self.err_log.append_err(110209,
+                                    "fr_load_DO_tags_FromDB数据加载错误，请检查数据库数据中数据是否正确")
             return False
 
         return True
@@ -1285,6 +1304,148 @@ class FuncFrRos2(Node):
             cursor.close()
             conn.close()
 
+    #robot DI输入 标签数据加载
+    def fr_load_DI_tags_FromDB(self):
+        # 路径连接
+        current_path = os.getcwd()
+        split_path1, folder1 = os.path.split(current_path)
+        split_path2, folder2 = os.path.split(split_path1)
+
+        # 连接数据库 并读取数据
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
+        # 创建一个Cursor:
+        cursor = conn.cursor()
+        try:
+            # 读取表格信息
+            cursor.execute('SELECT * FROM fr_DI_tags')
+            # 获取所有值
+            values = cursor.fetchall()
+            # 点表字典清空
+            self.dic_robotDI.clear()
+            # 获取的每行数据添加到点表，更新到tableView
+            for val in values:
+                dic_name = ''
+                tag = ""
+                # 点表数据逐行添加到本地 字典
+                dic_name = val[0]  # 数据库中的name
+                tag = val[1]  # 数据库中的comment注释
+                #标签添加数据
+                self.dic_robotDI[dic_name] = tag
+            return True
+        except OperationalError as o:
+            print(str(o))
+            self.err_log.append_err(111901, str(o))
+            return False
+        except Exception as e:
+            print(str(e))
+            self.err_log.append_err(111902,"fr_load_DI_tags_FromDB"+ str(e))
+            return False
+        finally:
+            cursor.close()
+            conn.close()
+
+    # robot DO输入 标签数据加载
+    def fr_load_DO_tags_FromDB(self):
+        # 路径连接
+        current_path = os.getcwd()
+        split_path1, folder1 = os.path.split(current_path)
+        split_path2, folder2 = os.path.split(split_path1)
+
+        # 连接数据库 并读取数据
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
+        # 创建一个Cursor:
+        cursor = conn.cursor()
+        try:
+            # 读取表格信息
+            cursor.execute('SELECT * FROM fr_DO_tags')
+            # 获取所有值
+            values = cursor.fetchall()
+            # 点表字典清空
+            self.dic_robotDO.clear()
+            # 获取的每行数据添加到点表，更新到tableView
+            for val in values:
+                dic_name = ''
+                tag = ""
+                # 点表数据逐行添加到本地 字典
+                dic_name = val[0]  # 数据库中的name
+                tag = val[1]  # 数据库中的comment注释
+                # 标签添加数据
+                self.dic_robotDO[dic_name] = tag
+            return True
+        except OperationalError as o:
+            print(str(o))
+            self.err_log.append_err(111901, str(o))
+            return False
+        except Exception as e:
+            print(str(e))
+            self.err_log.append_err(111902, "fr_load_DO_tags_FromDB" + str(e))
+            return False
+        finally:
+            cursor.close()
+            conn.close()
+
+    #robot DI输入标签保存到数据库
+    def update_tag_robotDI(self,DI_id, tag):
+        # 路径连接
+        current_path = os.getcwd()
+        split_path1, folder1 = os.path.split(current_path)
+        split_path2, folder2 = os.path.split(split_path1)
+        # 连接数据库 并读取数据
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
+        # 创建一个Cursor:
+        cursor = conn.cursor()
+        try:
+            # 执行更新语句，更新user表的数据:
+            update_stmt = 'UPDATE fr_DI_tags SET Tag=? WHERE name = ?'
+            update_values = (tag, DI_id)
+            cursor.execute(update_stmt, update_values)
+            conn.commit()
+            # 更新到本地工具坐标系表
+            self.dic_robotDI[DI_id] = tag
+            return True
+        except OperationalError as o:
+            print(str(o))
+            self.err_log.append_err(111201, str(o))
+            return False
+        except Exception as e:
+            print(e)
+            self.err_log.append_err(111202, "update_tag_robotDI更新标签错误：" + str(e))
+            return False
+        finally:
+            cursor.close()
+            conn.close()
+
+    # robot DO输出标签保存到数据库
+    def update_tag_robotDO(self, DO_id, tag):
+        # 路径连接
+        current_path = os.getcwd()
+        split_path1, folder1 = os.path.split(current_path)
+        split_path2, folder2 = os.path.split(split_path1)
+        # 连接数据库 并读取数据
+        conn = sqlite3.connect(split_path2 + self.path_dataBase)
+        # 创建一个Cursor:
+        cursor = conn.cursor()
+        try:
+            # 执行更新语句，更新user表的数据:
+            update_stmt = 'UPDATE fr_DO_tags SET Tag=? WHERE name = ?'
+            update_values = (tag, DO_id)
+            cursor.execute(update_stmt, update_values)
+            conn.commit()
+            # 更新到本地工具坐标系表
+            self.dic_robotDI[DO_id] = tag
+            return True
+        except OperationalError as o:
+            print(str(o))
+            self.err_log.append_err(111201, str(o))
+            return False
+        except Exception as e:
+            print(e)
+            self.err_log.append_err(111202, "update_tag_robotDI更新标签错误：" + str(e))
+            return False
+        finally:
+            cursor.close()
+            conn.close()
+
     # 函数功能描述:机器人点动
     # uint8_t ref - 0-关节点动, 2-基坐标系下点动, 4-工具坐标系下点动, 8-工件坐标系下点动
     # uint8_t nb - 1-关节1(或x轴),2-关节2(或y轴),3-关节3(或z轴),4-关节4(或绕x轴旋转),5-关节5(或绕y轴旋转),6-关节6(或绕z轴旋转)
@@ -1825,9 +1986,10 @@ class FuncFrRos2(Node):
     # 函数功能描述:设置当前模式下机械臂速度
     # float vel - 速度百分比,范围为1-100
     # 34
-    def SetSpeed(self, vel: float):
+    def SetSpeed(self, vel_cmd: float):
         try:
             # 定义命令
+            vel = float(vel_cmd)
             cmd_str = ("SetSpeed(" + str(vel) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
@@ -1849,6 +2011,8 @@ class FuncFrRos2(Node):
 
             # 全局速度赋值
             self.speed = vel
+            #速度值回传到界面显示
+            self.send_signal.signal_robotSpeed_callback.emit(vel)
             return True
 
         except Exception as e:

@@ -21,7 +21,7 @@ Rectangle{
         z: 99
     }
 
-    //表头
+    //按钮功能区
     Row{
         spacing:20
         anchors.top:parent.top

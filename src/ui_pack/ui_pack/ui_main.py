@@ -7,7 +7,8 @@ import rclpy
 import threading
 from GUI import YwfWidget
 from components import  Components
-import  GUI
+from components import SendSignal
+from components import GuiDispState
 from rclpy.executors import MultiThreadedExecutor
 from user_func_implement.function.Func_moveit2 import FuncMoveit2
 from user_func_implement.function.func_fr_ros2 import FuncFrRos2
@@ -37,6 +38,9 @@ def main():
     # Todo待完善
     #错误处理
     err_log = ErrorListUser()
+
+    #GUI显示开关状态
+    gui_dispState = GuiDispState
     #tf2监控及发布器
     func_tf2 = FuncTf2(err_log)
     # FR state订阅
@@ -72,8 +76,8 @@ def main():
     #time.sleep(1)
 
     # 开启GUI窗口线程
-    ywf_widget = YwfWidget()
-    ywf_widget.config(_components)
+    ywf_widget = YwfWidget(_components)
+
     #python开线程自动 带入方法的对象，和c++不同，无需将对象作为参数带入,套壳带入函数更标准
     thread_gui = threading.Thread(target=open_gui_ywf,args=(ywf_widget,))
     thread_gui.start()
@@ -83,8 +87,12 @@ def main():
         count_win_time+=1
         if count_win_time >= 1000:
             return 0
-    # 将GUI中的 反馈给界面的信号 给错误处理部件，用于给GUI发送信号
-    _components.add_Send_signal(ywf_widget.signal_obj)
+    # 将GUI中的 反馈给界面的信号对象 给每个部件，用于给GUI发送信号
+    _components.Send_signal = ywf_widget.signal_obj
+    fr_state_sub.send_signal = ywf_widget.signal_obj
+    func_fr_ros2.send_signal = ywf_widget.signal_obj
+    err_log.Send_signal = ywf_widget.signal_obj
+    #_components.add_Send_signal(ywf_widget.signal_obj)
 
     # 开始部件config配置操作
 
@@ -99,17 +107,20 @@ def main():
     executor.add_node(func_tf2)
     time.sleep(1)
     # fr机器人配置
-    func_fr_ros2.config()
+    result_frConfig = func_fr_ros2.config()
 
     # 开启fr ros2 python节点node  spin线程，用于ros2的信息处理
     thread_func_fr_ros2 = threading.Thread(target=execute_spin, args=(executor,))
     thread_func_fr_ros2.start()
     time.sleep(1)
 
-    #初始化完成 发送成功信号给界面
-    ywf_widget.init_success_fail(1)
     #组件初始化成功状态 赋值true
-    _components.init_success=True
+    _components.init_success= result_frConfig
+    # 初始化完成 发送成功信号给界面
+    if result_frConfig:
+        ywf_widget.init_success_fail(1)
+    else:
+        ywf_widget.init_success_fail(0)
 
     # 等待fr机器人正确反馈程序状态
     count_cycle =0  #超时
@@ -125,7 +136,7 @@ def main():
     func_fr_ros2.Mode(0)  # 手动模式
     func_fr_ros2.Mode(1)  #手动模式
     func_fr_ros2.RobotEnable(1)  #手臂上电
-    func_fr_ros2.SetSpeed(40)  #全局速度10%
+    func_fr_ros2.SetSpeed(10)  #全局速度10%
 
 
     ####用户逻辑代码部分

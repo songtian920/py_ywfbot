@@ -4,6 +4,134 @@ import QtQuick.Layouts 1.15
 
 ColumnLayout{
     spacing: 20
+    // 创建一个Timer控件，用于增加速度值
+    Timer {
+        // 为Timer分配一个唯一ID，以便在代码中引用
+        id: timer_robotSpeed_increase
+        // 设置定时器的触发间隔（毫秒）
+        interval: 50
+        // 初始时定时器不运行
+        running: false
+        // 定时器可以重复触发
+        repeat: true
+
+        // 当定时器触发时执行的操作
+        onTriggered: {
+            // 速度值累加
+            var increase_speed = 0.1
+            //分时域 改变累加量
+            if(timer_span_robotSpeed<=20)
+            {
+                increase_speed = 0.1
+            }
+            else if(timer_span_robotSpeed >20 && timer_span_robotSpeed <= 40)
+            {
+                increase_speed = 0.2
+            }
+            else if(timer_span_robotSpeed >40 && timer_span_robotSpeed <= 60)
+            {
+                increase_speed = 0.5
+            }
+            else if(timer_span_robotSpeed >60 && timer_span_robotSpeed<= 80)
+            {
+                increase_speed = 1
+            }
+            else if(timer_span_robotSpeed >80)
+            {
+                increase_speed = 2
+            }
+            //时间跨度自加1
+            timer_span_robotSpeed = timer_span_robotSpeed+1
+            //临时速度增量
+            var speed_temp = robot_speed_cmd + increase_speed
+            //判断临时速度值范围
+            if(speed_temp<1)
+            {
+                robot_speed_cmd = 1
+                //发信号改变速度
+                signal_robotSpeed(robot_speed_cmd)
+            }
+            else if(speed_temp >= 1 && speed_temp < 100)
+            {
+                robot_speed_cmd= speed_temp
+                //发信号改变速度
+                signal_robotSpeed(robot_speed_cmd)
+            }
+            else if(speed_temp >= 100) // 如果进度值超过最大值，停止定时器
+             {
+                robot_speed_cmd = 100
+                //发信号改变速度
+                signal_robotSpeed(robot_speed_cmd)
+                //停止定时器
+                timer_robotSpeed_increase.stop()
+            }
+        }
+    }
+
+    // 创建一个Timer控件，用于减小速度值
+    Timer {
+        // 为Timer分配一个唯一ID，以便在代码中引用
+        id: timer_robotSpeed_decrease
+        // 设置定时器的触发间隔（毫秒）
+        interval: 50
+        // 初始时定时器不运行
+        running: false
+        // 定时器可以重复触发
+        repeat: true
+
+        // 当定时器触发时执行的操作
+        onTriggered: {
+            // 速度值累加
+            var decrease_speed = 0.1
+            //分时域 改变累加量
+            if(timer_span_robotSpeed<=20)
+            {
+                decrease_speed = 0.1
+            }
+            else if(timer_span_robotSpeed >20 && timer_span_robotSpeed <= 40)
+            {
+                decrease_speed = 0.2
+            }
+            else if(timer_span_robotSpeed >40 && timer_span_robotSpeed <= 60)
+            {
+                decrease_speed = 0.5
+            }
+            else if(timer_span_robotSpeed >60 && timer_span_robotSpeed<= 80)
+            {
+                decrease_speed = 1
+            }
+            else if(timer_span_robotSpeed >80)
+            {
+                decrease_speed = 2
+            }
+            //时间跨度自加1
+            timer_span_robotSpeed = timer_span_robotSpeed+1
+            //临时速度减量
+            var speed_temp = robot_speed_cmd - decrease_speed
+            //判断临时速度值范围
+            if(speed_temp<1)
+            {
+                robot_speed_cmd = 1
+                //发信号改变速度
+                signal_robotSpeed(robot_speed_cmd)
+                //停止定时器
+                timer_robotSpeed_decrease.stop()
+            }
+            else if(speed_temp >= 0 && speed_temp < 100)
+            {
+                robot_speed_cmd= speed_temp
+                //发信号改变速度
+                signal_robotSpeed(robot_speed_cmd)
+            }
+            else if(speed_temp >= 100)  // 如果进度值超过最大值，停止定时器
+             {
+                robot_speed_cmd = 100
+                //发信号改变速度
+                signal_robotSpeed(robot_speed_cmd)
+            }
+        }
+    }
+
     //机械手臂速度
     Row{
         spacing: 15
@@ -24,9 +152,15 @@ ColumnLayout{
                 hoverEnabled: true // 设置为true以启用悬停事件
                 onPressed: {
                     robot_speed_decrease_btn.color = "#dce1ec"
+                    timer_span_robotSpeed = 0  //时间跨度复位
+                    //初始命令速度和反馈对齐
+                    robot_speed_cmd = robot_speed_state
+                    timer_robotSpeed_decrease.start() //定时触发器开始
                 }
                 onReleased: {
                     robot_speed_decrease_btn.color = "#1b1e23"
+                    timer_span_robotSpeed = 0  //时间跨度复位
+                    timer_robotSpeed_decrease.stop() //定时触发器结束
                 }
                 onClicked: {
                     //console.log("clicked")
@@ -44,7 +178,7 @@ ColumnLayout{
             Layout.alignment: Qt.AlignVCenter
             //显示值
             Text {
-                text: robot_speed
+                text: formatNumber(robot_speed_state)
                 font.pointSize:10
                 color: "white" // 字体颜色为白色
                 anchors.centerIn: parent
@@ -65,9 +199,15 @@ ColumnLayout{
                 hoverEnabled: true // 设置为true以启用悬停事件
                 onPressed: {
                     robot_speed_increase_btn.color = "#dce1ec"
+                    timer_span_robotSpeed = 0  //时间跨度复位
+                    //初始命令速度和反馈对齐
+                    robot_speed_cmd = robot_speed_state
+                    timer_robotSpeed_increase.start() //定时触发器开始
                 }
                 onReleased: {
                     robot_speed_increase_btn.color = "#1b1e23"
+                    timer_span_robotSpeed = 0  //时间跨度复位
+                    timer_robotSpeed_increase.stop()  //定时处罚器结束
                 }
                 onClicked: {
                     //console.log("clicked")
@@ -443,10 +583,25 @@ ColumnLayout{
         }
     }
 
+    function formatNumber(number) {
+        return number.toFixed(1); // 保留小数点后1位
+    }
+
+    //速度值返回值
+    function robotSpeed_callback(speed_val)
+    {
+        console.log("robotSpeed_callback")
+        robot_speed_state = speed_val
+    }
+
+    signal signal_robotSpeed(double speed_val)  //改变速度值
+
+    property int timer_span_robotSpeed: 0  //robot速度累加器时间计数器
 
     property int env_matching_score
     property string robot_enable: '未使能'
-    property int robot_speed: 0
+    property double robot_speed_cmd: 10
+    property double robot_speed_state: 0
     property string amr_enable: '未使能'
     property int amr_speed: 0
     property int amr_power: 0

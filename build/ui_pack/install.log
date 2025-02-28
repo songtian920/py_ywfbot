@@ -39,9 +39,10 @@
 /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/RobotToolTable.qml
 /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/RobotUserCalib.qml
 /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/MyButtonText.qml
+/home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/AmrStatusDisp.qml
 /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/Demo_VirtualKeyboard.qml
-/home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/RobotStatusDisp.qml
 /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/MyButtonIcon.qml
+/home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/RobotIoSet.qml
 /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/qml_main.qml
 /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/RobotToolCalib.qml
 /home/st/py_ywfbot_ws/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml/MyButton.qml
