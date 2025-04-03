@@ -1,9 +1,10 @@
 import rclpy
 from rclpy import time
 from rclpy.node import Node
-from frhal_msgs import msg
-from frhal_msgs.srv import ROSCmdInterface
-from frhal_msgs.msg import FRState
+
+from fairino_msgs.srv import RemoteCmdInterface
+from fairino_msgs.msg import RobotNonrtState
+
 import time
 from datetime import datetime
 import threading
@@ -24,7 +25,7 @@ from .error_list import ErrorListUser
 from .func_tf2 import FuncTf2
 import struct
 
-
+#模块号12
 class FrStateSub(Node):
     # 初始化函数
     def __init__(self,error:ErrorListUser,funcTf2:FuncTf2):
@@ -35,7 +36,7 @@ class FrStateSub(Node):
         cb_group_state = MutuallyExclusiveCallbackGroup()
         #fr 状态话题
         self.fr_state_subscription = (
-            self.create_subscription(FRState,'/nonrt_state_data',
+            self.create_subscription(RobotNonrtState,'/nonrt_state_data',
                                      self.fr_state_callback,10,callback_group=cb_group_state))
         #self.fr_state_subscription
         #本地保留 fr robot状态信息
@@ -198,8 +199,7 @@ class FrStateSub(Node):
             self.signal_list_int[9] = msg.tl_dgt_input_l
             self.signal_list_int[10] = msg.emg
             self.signal_list_int[11] = msg.robot_motion_done
-            self.signal_list_int[12] = msg.robot_motion_done
-            self.signal_list_int[13] = msg.grip_motion_done
+            self.signal_list_int[12] = msg.grip_motion_done
             # 发射fr整型列表数据
             self.send_signal.signal_robot_int_state_update.emit(self.signal_list_int)
 

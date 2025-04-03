@@ -1,0 +1,32 @@
+[3.105s] Invoking command in '/home/st/py_ywfbot_ws_v1.1/src/ui_pack': PYTHONPATH=/home/st/py_ywfbot_ws_v1.1/build/ui_pack/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/ui_pack build --build-base /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build install --record /home/st/py_ywfbot_ws_v1.1/build/ui_pack/install.log --single-version-externally-managed install_data
+[3.923s] running egg_info
+[3.926s] writing ../../build/ui_pack/ui_pack.egg-info/PKG-INFO
+[3.926s] writing dependency_links to ../../build/ui_pack/ui_pack.egg-info/dependency_links.txt
+[3.926s] writing entry points to ../../build/ui_pack/ui_pack.egg-info/entry_points.txt
+[3.926s] writing requirements to ../../build/ui_pack/ui_pack.egg-info/requires.txt
+[3.927s] writing top-level names to ../../build/ui_pack/ui_pack.egg-info/top_level.txt
+[3.940s] reading manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+[3.940s] adding license file 'LICENSE'
+[3.941s] writing manifest file '../../build/ui_pack/ui_pack.egg-info/SOURCES.txt'
+[3.941s] running build
+[3.941s] running build_py
+[3.941s] copying ui_pack/components.py -> /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build/lib/ui_pack
+[3.942s] copying ui_pack/GUI.py -> /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build/lib/ui_pack
+[3.948s] copying ui_pack/qml/PalletizingProcess.qml -> /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build/lib/ui_pack/qml
+[3.949s] copying ui_pack/qml/qml_main.qml -> /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build/lib/ui_pack/qml
+[3.950s] running install
+[3.959s] running install_lib
+[3.960s] copying /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build/lib/ui_pack/components.py -> /home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages/ui_pack
+[3.960s] copying /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build/lib/ui_pack/qml/PalletizingProcess.qml -> /home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+[3.960s] copying /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build/lib/ui_pack/qml/qml_main.qml -> /home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages/ui_pack/qml
+[3.960s] copying /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build/lib/ui_pack/GUI.py -> /home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages/ui_pack
+[3.960s] byte-compiling /home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages/ui_pack/components.py to components.cpython-310.pyc
+[3.964s] byte-compiling /home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages/ui_pack/GUI.py to GUI.cpython-310.pyc
+[3.972s] running install_data
+[3.973s] running install_egg_info
+[3.980s] removing '/home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages/ui_pack-0.0.0-py3.10.egg-info' (and everything under it)
+[3.980s] Copying ../../build/ui_pack/ui_pack.egg-info to /home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages/ui_pack-0.0.0-py3.10.egg-info
+[3.981s] running install_scripts
+[4.037s] Installing ui_main script to /home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/ui_pack
+[4.040s] writing list of installed files to '/home/st/py_ywfbot_ws_v1.1/build/ui_pack/install.log'
+[4.104s] Invoked command in '/home/st/py_ywfbot_ws_v1.1/src/ui_pack' returned '0': PYTHONPATH=/home/st/py_ywfbot_ws_v1.1/build/ui_pack/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/st/py_ywfbot_ws_v1.1/install/ui_pack/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/ui_pack build --build-base /home/st/py_ywfbot_ws_v1.1/build/ui_pack/build install --record /home/st/py_ywfbot_ws_v1.1/build/ui_pack/install.log --single-version-externally-managed install_data

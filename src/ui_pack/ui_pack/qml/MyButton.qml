@@ -24,7 +24,7 @@ Rectangle {
         id: btn_image
         source: imageSourcePath // 替换为实际的图片路径
         fillMode: Image.PreserveAspectFit
-        height: parent.height * 0.6 // 确保图片垂直居中
+        height: parent.height * 0.8 // 确保图片垂直居中
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 10
@@ -41,7 +41,7 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         //anchors.centerIn:parent
         anchors.left: parent.left
-        anchors.leftMargin: parent.width/3
+        anchors.leftMargin: parent.width*0.4
         visible: visible_textBtn
     }
 

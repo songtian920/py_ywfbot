@@ -49,19 +49,19 @@ ColumnLayout{
             {
                 robot_speed_cmd = 1
                 //发信号改变速度
-                signal_robotSpeed(robot_speed_cmd)
+                //signal_robotSpeed(robot_speed_cmd)
             }
             else if(speed_temp >= 1 && speed_temp < 100)
             {
                 robot_speed_cmd= speed_temp
                 //发信号改变速度
-                signal_robotSpeed(robot_speed_cmd)
+                //signal_robotSpeed(robot_speed_cmd)
             }
             else if(speed_temp >= 100) // 如果进度值超过最大值，停止定时器
              {
                 robot_speed_cmd = 100
                 //发信号改变速度
-                signal_robotSpeed(robot_speed_cmd)
+                //signal_robotSpeed(robot_speed_cmd)
                 //停止定时器
                 timer_robotSpeed_increase.stop()
             }
@@ -113,7 +113,7 @@ ColumnLayout{
             {
                 robot_speed_cmd = 1
                 //发信号改变速度
-                signal_robotSpeed(robot_speed_cmd)
+                //signal_robotSpeed(robot_speed_cmd)
                 //停止定时器
                 timer_robotSpeed_decrease.stop()
             }
@@ -121,13 +121,13 @@ ColumnLayout{
             {
                 robot_speed_cmd= speed_temp
                 //发信号改变速度
-                signal_robotSpeed(robot_speed_cmd)
+                //signal_robotSpeed(robot_speed_cmd)
             }
             else if(speed_temp >= 100)  // 如果进度值超过最大值，停止定时器
              {
                 robot_speed_cmd = 100
                 //发信号改变速度
-                signal_robotSpeed(robot_speed_cmd)
+                //signal_robotSpeed(robot_speed_cmd)
             }
         }
     }
@@ -161,6 +161,7 @@ ColumnLayout{
                     robot_speed_decrease_btn.color = "#1b1e23"
                     timer_span_robotSpeed = 0  //时间跨度复位
                     timer_robotSpeed_decrease.stop() //定时触发器结束
+                    signal_robotSpeed(robot_speed_cmd)
                 }
                 onClicked: {
                     //console.log("clicked")
@@ -208,6 +209,7 @@ ColumnLayout{
                     robot_speed_increase_btn.color = "#1b1e23"
                     timer_span_robotSpeed = 0  //时间跨度复位
                     timer_robotSpeed_increase.stop()  //定时处罚器结束
+                    signal_robotSpeed(robot_speed_cmd)
                 }
                 onClicked: {
                     //console.log("clicked")

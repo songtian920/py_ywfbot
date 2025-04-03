@@ -95,7 +95,6 @@ Rectangle{
                 }
                 onReleased: {
                     close_page_btn.color = "#3c4454"
-
                 }
                 onClicked: {
                     root_toolCalib.visible = false
@@ -125,7 +124,6 @@ Rectangle{
             width: parent.width
             height: parent.height
             Layout.alignment: Qt.AlignCenter
-
             color: "#343b48"
             visible: false
 

@@ -13,13 +13,31 @@ from user_func_implement.function.error_list import ErrorListUser
 import launch
 import launch_ros.actions
 from user_func_implement.function.func_tf2 import FuncTf2
+from user_func_implement.function.palletProcess import PalletProcess
+import asyncio
 
+#模块号03
+#GUI显示开关状态，通过控制显示开关来决定哪些信号需要反馈，
+# 用于减小界面显示的运行开销
+class GuiDispState:
+    # 构造函数
+    def __init__(self):
+        print("CommandScript初始化")
+        #界面的类型 0：本地GUI，1：远程网络GUI
+        self.GUIType = 0  #默认本地GUI
+        #主界面状态显示开关AmrStatusDisp
+        self.mian_statusDisp_switch = True
+        #机器人状态显示RobotManual
+        self.RobotManualDisp_switch = False
+        #Io监控显示开关
+        self.IoSetDisp_switch = False
+        #
 
 #部件库类
 #包含了 状态控制 异常处理日志 sqlite数据库  机械手臂API 运动底盘API GPIO 视觉API tcp_socket通讯 tcp_modbus通讯
 class Components:
     # 初始化函数
-    def __init__(self,err_log:ErrorListUser,func_FrRos2:FuncFrRos2,FrState:FrStateSub,funcTf2:FuncTf2):
+    def __init__(self,err_log:ErrorListUser,func_FrRos2:FuncFrRos2,FrState:FrStateSub,funcTf2:FuncTf2,pallet_Process:PalletProcess,gui_DispState:GuiDispState):
         print("初始化")
         #moveit2 api部件
         self.FuncMoveit2=None
@@ -29,6 +47,10 @@ class Components:
         self.FrStateSub:FrStateSub=FrState
         #tf2状态监控及发布
         self.func_tf2 = funcTf2
+        #码垛工艺
+        self.palletProcess = pallet_Process
+        #信息显示开关
+        self.guiDispState:GuiDispState = gui_DispState
 
         #手自动切换
         self.__manuel_auto_status = False
@@ -92,57 +114,74 @@ class Components:
 
     #手自动切换开关
     def manuel_auto_switch(self,mode:bool):
-            # 启动状态切位暂停
-            self.__pause_start = False
-            #切换自动状态 mode为True
-            if mode:
-                if self.init_success & (not self.errListUser.errStatus): #初始化成功及无报警状态才能切自动
+        # 启动状态切位暂停
+        self.__pause_start = False
+        #切换自动状态 mode为True
+        if mode:
+            if self.init_success & (not self.errListUser.errStatus): #初始化成功及无报警状态才能切自动
+                result = self.FuncFrRos2.Mode(0)  # 自动
+                if result:
                     # 解除阻塞
                     self.commandScript.block_cmd(False)
                     # 命令赋初始值
                     self.commandScript.set_command("start")
                     self.__manuel_auto_status = True
-                    self.FuncFrRos2.Mode(0) #自动
-                else:
-                    print("初始化未成功或有异常，不能切换自动，请完成初始化并清除异常")
-                    #报警处理
-                    self.errListUser.append_err(1000,"初始化未成功或有异常，不能切换自动，请完成初始化并清除异常")
+                    # 切换后为了安全，将速度设置为10%
+                    self.FuncFrRos2.SetSpeed(10.0)
 
-            else: #切换手动
-                # 阻塞脚本命令 其他用户无法改变命令 直至解除阻塞
+            else:
+                print("初始化未成功或有异常，不能切换自动，请完成初始化并清除异常")
+                #报警处理
+                self.errListUser.append_err(1000,"初始化未成功或有异常，不能切换自动，请完成初始化并清除异常")
+
+        else: #切换手动
+            # 阻塞脚本命令 其他用户无法改变命令 直至解除阻塞
+            result =  self.FuncFrRos2.Mode(1)  # 手动
+            if result:
                 self.commandScript.block_cmd(True)
                 # 命令值清空
                 self.commandScript.set_command("")
                 #todo 向各个模块发送终止命令
                 #状态 切换成手动
                 self.__manuel_auto_status = False
-                self.FuncFrRos2.Mode(1)  # 手动
+                # 切换后为了安全，将速度设置为10%
+                self.FuncFrRos2.SetSpeed(10.0)
 
-            # 给界面发送 手动自动状态信号
-            self.Send_signal.manuel_auto_signal.emit(self.__manuel_auto_status)
-            #反馈手自动状态
-            return self.__manuel_auto_status
+
+        # 给界面发送 手动自动状态信号
+        self.Send_signal.manuel_auto_signal.emit(self.__manuel_auto_status)
+        #反馈手自动状态
+        return self.__manuel_auto_status
 
     #启动暂停切换开关
     def start_pause_switch(self,mode:bool):
-            #启动 mode为True
-            if mode:
-                if self.__manuel_auto_status & (not self.errListUser.errStatus): #状态为自动
-                    #启动状态
-                    self.__pause_start = True
-                else:
-                    #警告提示 切换到自动状态
-                    print("当前的状态为手动状态，请先切换到自动")
-                    self.errListUser.append_err(1001,"当前的状态为手动状态，请先切换到自动")
+        #启动 mode为True
+        if mode:
+            if self.__manuel_auto_status and (not self.errListUser.errStatus) and self.init_success: #状态为自动
+                self.FuncFrRos2.Start()  # 给机器人发送开始
+                #启动状态
+                self.__pause_start = True
 
-            else:  #状态切换暂停
-                self.__pause_start = False
+            else:
+                #警告提示 切换到自动状态
+                print("当前的状态为手动状态，请先切换到自动")
+                self.errListUser.append_err(1001,"当前的状态为手动状态，请先切换到自动")
 
-            # 给界面发信号 告知是否启动
-            self.Send_signal.start_status_signal.emit(self.__pause_start)
-            return self.__pause_start
+        else:  #状态切换暂停
+            self.__pause_start = False
+            #asyncio.run(self.stopMotion_task())
+            #self.FuncFrRos2.StopMotion()  # 给机器人发送停止
+            self.FuncFrRos2.Pause()
+            #self.stopMotion_task()
+        # 给界面发信号 告知是否启动
+        self.Send_signal.start_status_signal.emit(self.__pause_start)
+        return self.__pause_start
 
-
+    #向组件发送运动终止
+    #async def stopMotion_task(self):
+    #    self.FuncFrRos2.StopMotion()  # 运动终止
+    def stopMotion_task(self):
+        self.FuncFrRos2.StopMotion()  # 运动终止
 
 #command控制命令
 #主函数main中的状态机使用此对象，完成状态切换的操作
@@ -229,20 +268,14 @@ class SendSignal(QObject):
     #RobotDIO
     signal_update_IO_state_robotDIO = Signal(list,list,list,list)
 
-#GUI显示开关状态，通过控制显示开关来决定哪些信号需要反馈，
-# 用于减小界面显示的运行开销
-class GuiDispState:
-    # 构造函数
-    def __init__(self):
-        print("CommandScript初始化")
-        #界面的类型 0：本地GUI，1：远程网络GUI
-        self.GUIType = 0  #默认本地GUI
-        #主界面状态显示开关AmrStatusDisp
-        self.mian_statusDisp_switch = True
-        #机器人状态显示RobotManual
-        self.RobotManualDisp_switch = False
-        #manualControl_win
-        self.manualControlDisp_switch = False
-        #
+    #码垛工艺包
+    #插入新工艺参数
+    signal_insert_newPalletProcess_callback = Signal(str)
+    #码垛工艺参数增加一行
+    signal_appendParam_palletProcess_callback = Signal(list)
+    #向界面传递 tool user 名称值
+    signal_sendToolUserPointNames_callback = Signal(list,list,list)
+
+
 
 

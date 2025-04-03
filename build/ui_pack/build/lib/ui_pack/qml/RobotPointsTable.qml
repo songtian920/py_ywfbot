@@ -90,7 +90,6 @@ Rectangle{
                 }
                 onClicked: {
                     tableModel.clear()
-
                     signal_refresh_DBPointToTableView()
                 }
             }
@@ -1056,8 +1055,6 @@ Rectangle{
         height_tableRec+=51
         //tableView增高一行的高度
         height_tableView=height_tableView+51
-
-
     }
 
     //当插入新行到数据库成功后 python发送信号给qml，调用此函数给table model也添加行
@@ -1114,7 +1111,6 @@ Rectangle{
         "joint4":parseFloat(value[3]),"joint5":parseFloat(value[4]),"joint6":parseFloat(value[5]),
         "x":parseFloat(value[6]),"y":parseFloat(value[7]),"z":parseFloat(value[8]),
         "xRot":parseFloat(value[9]),"yRot":parseFloat(value[10]),"zRot":parseFloat(value[11])})
-
     }
 
 //    //将数据库的数据刷新到 tableModel

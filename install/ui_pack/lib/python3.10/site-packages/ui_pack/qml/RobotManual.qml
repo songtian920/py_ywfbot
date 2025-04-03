@@ -372,7 +372,7 @@ ColumnLayout{
                             console.log(point_comboBox.currentText)
                             if(point_comboBox.currentIndex != -1)
                             {
-                                point_comment_current = point_comment_Molde.get(point_comboBox.currentIndex).name
+                                robot_manual_layout.point_comment_current = point_comment_Molde.get(point_comboBox.currentIndex).name
                             }
                         }
                     }
@@ -667,7 +667,7 @@ ColumnLayout{
                             // 鼠标进入区域时，按钮颜色变化
                             color = "#2c313c"
                         }
-                         onPressed: {
+                        onPressed: {
                             j3_z_FWD_btn.color = "#dce1ec"
                             //发送点动信号1轴，正向
                             signal_StartJOG(3,1)

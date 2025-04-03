@@ -12,7 +12,7 @@ import asyncio
 import os
 import math
 
-
+#模块号02
 class YwfWidget:
     # 初始化函数
     def __init__(self,_components):
@@ -27,7 +27,6 @@ class YwfWidget:
         self.win_open_success = False
         print("初始化")
 
-
     # 定义槽函数
     #主界面 手动自动切换
     @Slot(bool)
@@ -37,8 +36,7 @@ class YwfWidget:
             # mode true为自动 false为手动
             #手自动模式切换
             self.components.manuel_auto_switch(mode)
-            #切换后为了安全，将速度设置为10%
-            self.components.FuncFrRos2.SetSpeed(10.0)
+
         except Exception as e:
             self.components.errListUser.append_err(112601, "设置Mode错误："+str(e))
 
@@ -57,10 +55,15 @@ class YwfWidget:
     def signal_subQml_test(self):
         print("subQml test successful!")
 
-    #主界面 初始化成功后 给界面发信号反馈 初始化成功
+    #主界面打开关闭 fr机器人手动控制信息回传
     @Slot()
-    def init_success_fail(self, status):
-        self.signal_obj.init_success_signal.emit(1)
+    def robotManuelSwitch(self,_switch):
+        self.components.guiDispState.RobotManualDisp_switch = _switch
+
+    #主界面打开IO监控信息回传
+    @Slot()
+    def IoSetSwitch(self,_switch):
+        self.components.guiDispState.IoSetDisp_switch = _switch
 
     #robotManual手臂手动 JOG
     @Slot()
@@ -119,7 +122,7 @@ class YwfWidget:
 
         else:
             #停止运动
-            self.components.FuncFrRos2.StopMotion()
+            #self.components.FuncFrRos2.StopMotion()
             pass
 
     #AmrStatusDisp状态显示
@@ -192,7 +195,8 @@ class YwfWidget:
         if flag_exe == 1:
             self.components.FuncFrRos2.MoveJoint(point_name,block = False)
         else:
-            self.components.FuncFrRos2.StopMotion()
+            pass
+            #self.components.FuncFrRos2.StopMotion()
 
 
     #fr工具坐标系Tool
@@ -313,24 +317,36 @@ class YwfWidget:
     # 手臂用户坐标系表删除一行
     @Slot()
     def deleteDbRow_robotUserList_main(self, name_str):
-        rlt = self.components.FuncFrRos2.deleteDbRow_robotUserList(name_str)
+        try:
+            rlt = self.components.FuncFrRos2.deleteDbRow_robotUserList(name_str)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "deleteDbRow_robotUserList_main错误:" + str(e))
 
     # 手臂用户坐标从 tableView更新到数据库及内存
     @Slot()
     def updateDbRow_robotUserList_main(self, name_str, str_list):
-        print(str_list)
-        self.components.FuncFrRos2.updateDbRow_robotUserList(name_str, str_list)
+        try:
+            print(str_list)
+            self.components.FuncFrRos2.updateDbRow_robotUserList(name_str, str_list)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "updateDbRow_robotUserList_main错误:" + str(e))
 
     # 手臂用户坐标系插入插入
     @Slot()
     def insert_row_robotUserList_main(self, name_str):
-        rlt = self.components.FuncFrRos2.insert_newRowInRobotUserList(name_str)
+        try:
+            rlt = self.components.FuncFrRos2.insert_newRowInRobotUserList(name_str)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "insert_row_robotUserList_main错误:" + str(e))
 
     # 手臂用户坐标点表刷新，从数据库读取到 点表tableView，并加载到内存及注册到fr_ros2服务器
     @Slot()
     def refresh_DBUserToTableView(self):
-        self.components.FuncFrRos2.fr_load_usersFromDB()  #用户坐标系表加载
-        self.components.FuncFrRos2.users_tf_static_broadcaster()  #用户坐标系tf发布
+        try:
+            self.components.FuncFrRos2.fr_load_usersFromDB()  #用户坐标系表加载
+            self.components.FuncFrRos2.users_tf_static_broadcaster()  #用户坐标系tf发布
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "refresh_DBUserToTableView错误:" + str(e))
 
     # 自定义新用户坐标系 示教点位
     @Slot()
@@ -415,7 +431,53 @@ class YwfWidget:
             elif type_ == "output":
                 self.components.FuncFrRos2.update_tag_robotDO(id_,status)
         except Exception as e:
-            self.components.errListUser.append_err(112601, "robot_save_DIO_Tag:" + str(e))
+            self.components.errListUser.append_err(112601, "保存机器人IO点位标签:" + str(e))
+
+    #码垛工艺包
+    #新增一行 码垛包
+    @Slot()
+    def insert_NewPalletProcess(self,name_str):
+        try:
+            self.components.palletProcess.insert_newPalletProcess(name_str)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "插入新码垛工艺参数:" + str(e))
+
+    #刷新码垛工艺表
+    @Slot()
+    def refreshData_palletProcess(self):
+        try:
+            self.components.palletProcess.loadParam_From_palletProcessDB()
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "刷新工艺包数据报错:" + str(e))
+
+    #删除码垛工艺表 一行
+    @Slot()
+    def deleteRow_palletProcess(self,name_str):
+        try:
+            self.components.palletProcess.deleteRow_ParamPalletProcess(name_str)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "删除工艺包数据报错:" + str(e))
+
+    #更新一行数据
+    @Slot()
+    def updateRow_palletProcess(self,name_str,str_list):
+        try:
+            self.components.palletProcess.updateDbRow_palletProcess(name_str,str_list)
+        except Exception as e:
+            self.components.errListUser.append_err(112601, "更新工艺包数据报错:" + str(e))
+
+    @Slot()
+    def getTool_User_PointNameToLoadCombox(self):
+        tool_list = list(self.components.FuncFrRos2.dic_tool.keys())
+        user_list = list(self.components.FuncFrRos2.dic_user.keys())
+        pointName_list = list(self.components.FuncFrRos2.dic_point.keys())
+        # 向qml发送信号传递值
+        self.signal_obj.signal_sendToolUserPointNames_callback.emit(tool_list,user_list,pointName_list)
+
+
+    # 主界面 初始化成功后 给界面发信号反馈 初始化成功
+    def init_success_fail(self, status):
+        self.signal_obj.init_success_signal.emit(1)
 
     #显示窗口
     def show_widget(self):
@@ -457,6 +519,9 @@ class YwfWidget:
         self.root_object.signal_manuel_auto_switch.connect(self.manuel_auto_switch)
         self.root_object.signal_start_pause_switch.connect(self.start_pause_switch)
         self.root_object.signal_clear_errorList.connect(self.clear_error_list)
+        self.root_object.signal_robotManuelSwitch.connect(self.robotManuelSwitch)
+        self.root_object.signal_IoSetSwitch.connect(self.IoSetSwitch)
+
         #手臂手动RobotManual
         self.root_object.signal_StartJOG_main.connect(self.StartJOG,Qt.QueuedConnection)  #开始JOG信号绑定 槽函数
         self.root_object.signal_StopJOG_main.connect(self.StopJOG)   #停止JOG信号绑定 槽函数
@@ -524,6 +589,18 @@ class YwfWidget:
         self.root_object.signal_SetDO_RobotIoSet_main.connect(self.robot_setDo)
         #输入输出标签更新
         self.root_object.signal_update_RobotDIO_tag_main.connect(self.robot_save_DIO_Tag)
+
+        #码垛工艺包
+        #新增一个码垛工艺
+        self.root_object.signal_insert_newPalletProcess_main.connect(self.insert_NewPalletProcess)
+        #刷新码垛工艺表
+        self.root_object.signal_refreshData_PalletProcess_main.connect(self.refreshData_palletProcess)
+        #删除参数行
+        self.root_object.signal_deleteDbRow_palletProcess_main.connect(self.deleteRow_palletProcess)
+        #更新数据
+        self.root_object.signal_updateDbRow_palletProcess_main.connect(self.updateRow_palletProcess)
+        #获取tool user names信号
+        self.root_object.signal_getTool_User_PointNameToLoadCombox_main.connect(self.getTool_User_PointNameToLoadCombox)
 
         print("已打开")
         self.win_open_success = True

@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 import threading
 
-
+#模块号14
 class FuncMoveit2(Node):
     #初始化函数
     def __init__(self):

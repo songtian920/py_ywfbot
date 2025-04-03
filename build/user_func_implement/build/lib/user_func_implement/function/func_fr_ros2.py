@@ -1,9 +1,8 @@
 import rclpy
 from rclpy import time
 from rclpy.node import Node
-from frhal_msgs import msg
-from frhal_msgs.srv import ROSCmdInterface
-from frhal_msgs.msg import FRState
+
+from fairino_msgs.srv import RemoteCmdInterface
 import time
 from datetime import datetime
 import threading
@@ -40,9 +39,9 @@ class FuncFrRos2(Node):
         cb_group1 = MutuallyExclusiveCallbackGroup()
         cb_group2 = MutuallyExclusiveCallbackGroup()
         #fr API接口
-        self.cli = self.create_client(ROSCmdInterface,'FR_ROS_API_service',callback_group=cb_group1)
-        self.req = ROSCmdInterface.Request()
-        self.resp = ROSCmdInterface.Response()
+        self.cli = self.create_client(RemoteCmdInterface,'fairino_remote_command_service',callback_group=cb_group1)
+        self.req = RemoteCmdInterface.Request()
+        self.resp = RemoteCmdInterface.Response()
 
         #本地保留 FrStateSub对象
         self.fr_state = frState
@@ -110,6 +109,8 @@ class FuncFrRos2(Node):
         self.y_rotate_userCalib_temp = 0.0
         self.z_rotate_userCalib_temp = 0.0
 
+        #运动终止标志位
+        self.stopMotion_flag = False
 
     #配置
     # 02
@@ -163,7 +164,7 @@ class FuncFrRos2(Node):
             #输入标签字典给状态监控
             self.fr_state.dic_robotDI = self.dic_robotDI
         else:
-            self.err_log.append_err(110209,
+            self.err_log.append_err(110210,
                                     "fr_load_DI_tags_FromDB数据加载错误，请检查数据库数据中数据是否正确")
             return False
         # 加载Robot DO表
@@ -171,10 +172,9 @@ class FuncFrRos2(Node):
             # 输出标签字典给状态监控
             self.fr_state.dic_robotDO = self.dic_robotDO
         else:
-            self.err_log.append_err(110209,
+            self.err_log.append_err(110211,
                                     "fr_load_DO_tags_FromDB数据加载错误，请检查数据库数据中数据是否正确")
             return False
-
         return True
 
     # 广播发布坐标系
@@ -1471,7 +1471,7 @@ class FuncFrRos2(Node):
                 self.speed) + ')'
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(112302, "StartJOG，fr_ros2 service超时，检查网络")
@@ -1479,10 +1479,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future,timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future,timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res !='1' and result.cmd_res !='0' :
+            if result.cmd_res !='0' :
                 self.err_log.append_err(112103, "StartJOG，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
             # time.sleep(0.5)
@@ -1511,7 +1511,7 @@ class FuncFrRos2(Node):
             cmd_str = "StopJOG(" + str(work_space_temp) + ')'
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(112301, "StopJOG，fr_ros2 service超时，检查网络")
@@ -1519,10 +1519,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future,timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future,timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res !='1' and result.cmd_res !='0':
+            if  result.cmd_res !='0':
                 self.err_log.append_err(112302, "StopJOG，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
             return True
@@ -1549,12 +1549,12 @@ class FuncFrRos2(Node):
             j6 = point_values[8] + offset_j6
 
             # 定义命令
-            cmd_str = ("MoveJoint_ywf(" + str(j1) + "," + str(j2) + "," + str(j3) + "," +
+            cmd_str = ("MoveJ_ywf(" +"JNT"+","+ str(j1) + "," + str(j2) + "," + str(j3) + "," +
                        str(j4) + "," +str(j5) + "," + str(j6) + "," +
                        str(speed) + "," + str(acc) + "," + str(blendT) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(112403, "MoveJoint，fr_ros2 service超时，检查网络")
@@ -1562,21 +1562,21 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future,timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future,timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res !='1' and result.cmd_res !='0' :
+            if result.cmd_res !='0' :
                 self.err_log.append_err(112401, "MoveJoint，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
 
-            #阻塞直到运动结束
+            #阻塞直到运动结束  收到停止运动信号 停止阻塞
             count_motion_done = 0
-            while block:
-                if self.fr_state.robot_motion_done == 1:
+            while block and (not self.stopMotion_flag) :
+                count_motion_done += 1
+                if self.fr_state.robot_motion_done == 1 and self._isInPosition(joints=[j1,j2,j3,j4,j5,j6]):
                     break
                 else:
                     if count_motion_done>1000:
-                        count_motion_done += 1
                         self.err_log.append_err(112401,
                                                 "MoveJoint，等待motion done超时报警，超过100s未等到robot_motion_done信号")
                         return False
@@ -1615,7 +1615,7 @@ class FuncFrRos2(Node):
                        str(speed) + "," + str(acc) + "," + str(blendT) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(112403, "MoveL_Joint，fr_ros2 service超时，检查网络")
@@ -1623,21 +1623,21 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res != '0' :
                 self.err_log.append_err(112401,
                                         "MoveL_Joint，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
-            # 阻塞直到运动结束
+            # 阻塞直到运动结束 收到停止运动信号 停止阻塞
             count_motion_done = 0
-            while block:
-                if self.fr_state.robot_motion_done == 1:
+            while block and (not self.stopMotion_flag):
+                count_motion_done += 1
+                if self.fr_state.robot_motion_done == 1 and self._isInPosition(joints=[j1,j2.j3.j4.j5.j6]):
                     break
                 else:
-                    if count_motion_done > 1000:
-                        count_motion_done += 1
+                    if count_motion_done > 200:
                         self.err_log.append_err(112401,
                                                 "MoveL_Joint，等待motion done超时报警，超过100s未等到robot_motion_done信号")
                         return False
@@ -1678,9 +1678,9 @@ class FuncFrRos2(Node):
             x_m = x/1000.0  #单位毫米转米
             y_m = y/1000.0  #单位毫米转米
             z_m = z/1000.0  #单位毫米转米
-            x_rot_rad = x_rot * 3.1415926 / 180   #角度转弧度
-            y_rot_rad = y_rot * 3.1415926 / 180   #角度转弧度
-            z_rot_rad = z_rot * 3.1415926 / 180  # 角度转弧度
+            x_rot_rad = x_rot * math.pi / 180   #角度转弧度
+            y_rot_rad = y_rot * math.pi / 180   #角度转弧度
+            z_rot_rad = z_rot * math.pi / 180  # 角度转弧度
             #欧拉角转四元数
             q_user_tool = tfs.euler.euler2quat(x_rot_rad,y_rot_rad,z_rot_rad)
             #将四元数转旋转矩阵
@@ -1719,9 +1719,9 @@ class FuncFrRos2(Node):
             x_trans_mm = x_trans[0] * 1000.0
             y_trans_mm = y_trans[0] * 1000.0
             z_trans_mm = z_trans[0] * 1000.0
-            xRot_angle = xRot_base_tool0 * 180 / 3.1415926
-            yRot_angle = yRot_base_tool0 * 180 / 3.1415926
-            zRot_angle = zRot_base_tool0 * 180 / 3.1415926
+            xRot_angle = xRot_base_tool0 * 180 / math.pi
+            yRot_angle = yRot_base_tool0 * 180 / math.pi
+            zRot_angle = zRot_base_tool0 * 180 / math.pi
 
             #将tool0在base的坐标变换发送给命令
             # 定义命令
@@ -1729,30 +1729,50 @@ class FuncFrRos2(Node):
                        str(xRot_angle) + "," + str(yRot_angle) + "," + str(zRot_angle) + "," +
                        str(speed) + "," + str(acc) + "," + str(blendT) + ')')
             self.req.cmd_str = cmd_str
-            # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
-                print('service not available, waiting again...')
-                # 服务器超时未响应，返回报错
-                self.err_log.append_err(112403, "MovePose，fr_ros2 service超时，检查网络")
-                return False
-            # 发送请求
-            future = self.cli.call_async(self.req)
-            # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
-            # 获取结果
-            result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
-                self.err_log.append_err(112401,
-                                        "MovePose，service返回结果错误，检查fr service服务端是否正常返回结果")
-                return False
-            # 阻塞直到运动结束
-            count_motion_done = 0
-            while block:
-                if self.fr_state.robot_motion_done == 1:
+            for i in range(5):
+                # 等待服务器响应
+                if not self.cli.wait_for_service(timeout_sec=3.0):
+                    print('service not available, waiting again...')
+                    # 服务器超时未响应，返回报错
+                    self.err_log.append_err(112403, "MovePose，fr_ros2 service超时，检查网络")
+                    return False
+                # 发送请求
+                time.sleep(0.1)  # 休眠时间
+                future = self.cli.call_async(self.req)
+                # 等待返回预期
+                rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
+                # 获取结果
+                result = future.result()
+                if result.cmd_res == '0' :
                     break
                 else:
-                    count_motion_done += 1
-                    if count_motion_done > 1000:
+                    if i >= 5:
+                        self.err_log.append_err(112401,
+                                                "MovePose，service返回结果错误:"+result.cmd_res)
+                        return False
+                    else:
+                        time.sleep(0.5)  # 休眠时间
+                        pass
+
+            # 阻塞直到运动结束  收到停止运动信号 停止阻塞
+            count_motion_done = 0
+            count_inPosition = 0
+            while block and (not self.stopMotion_flag):
+                count_motion_done += 1
+                inPosition_1 = self._isInPosition(posList=[x_trans_mm, y_trans_mm, z_trans_mm, xRot_angle, yRot_angle, zRot_angle],
+                                                  dis_err=5.0, angle_err=2.5)
+                inPosition_2 = self._isInPosition(posList=[x_trans_mm, y_trans_mm, z_trans_mm, xRot_angle, yRot_angle, zRot_angle],
+                                   dis_err=2, angle_err=0.8)
+                if self.fr_state.robot_motion_done == 1 and inPosition_1 :
+                    break
+                elif inPosition_2:
+                    count_inPosition+=1
+                    #如果到位5s，则可以跳出循环
+                    if count_inPosition > 50:
+                        break
+                    time.sleep(0.1)
+                else:
+                    if count_motion_done > 300:
                         self.err_log.append_err(112401,
                                                 "MovePose，等待motion done超时报警，超过100s未等到robot_motion_done信号")
                         return False
@@ -1792,9 +1812,9 @@ class FuncFrRos2(Node):
             x_m = x / 1000.0  # 单位毫米转米
             y_m = y / 1000.0  # 单位毫米转米
             z_m = z / 1000.0  # 单位毫米转米
-            x_rot_rad = x_rot * 3.1415926 / 180  # 角度转弧度
-            y_rot_rad = y_rot * 3.1415926 / 180  # 角度转弧度
-            z_rot_rad = z_rot * 3.1415926 / 180  # 角度转弧度
+            x_rot_rad = x_rot * math.pi / 180  # 角度转弧度
+            y_rot_rad = y_rot * math.pi / 180  # 角度转弧度
+            z_rot_rad = z_rot * math.pi / 180  # 角度转弧度
             # 欧拉角转四元数
             q_user_tool = tfs.euler.euler2quat(x_rot_rad, y_rot_rad, z_rot_rad)
             # 将四元数转旋转矩阵
@@ -1834,9 +1854,9 @@ class FuncFrRos2(Node):
             x_trans_mm = x_trans[0] * 1000.0
             y_trans_mm = y_trans[0] * 1000.0
             z_trans_mm = z_trans[0] * 1000.0
-            xRot_angle = xRot_base_tool0 * 180 / 3.1415926
-            yRot_angle = yRot_base_tool0 * 180 / 3.1415926
-            zRot_angle = zRot_base_tool0 * 180 / 3.1415926
+            xRot_angle = xRot_base_tool0 * 180 / math.pi
+            yRot_angle = yRot_base_tool0 * 180 / math.pi
+            zRot_angle = zRot_base_tool0 * 180 / math.pi
 
             # 将tool0在base的坐标变换发送给命令
             # 定义命令
@@ -1845,7 +1865,7 @@ class FuncFrRos2(Node):
                        str(speed) + "," + str(acc) + "," + str(blendT) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(112403, "MoveL_Pose，fr_ros2 service超时，检查网络")
@@ -1853,17 +1873,18 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res != '0' :
                 self.err_log.append_err(112401,
                                         "MoveL_Pose，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
-            # 阻塞直到运动结束
+            # 阻塞直到运动结束  收到停止运动信号 停止阻塞
             count_motion_done = 0
-            while block:
-                if self.fr_state.robot_motion_done == 1:
+            while block and (not self.stopMotion_flag):
+                if (self.fr_state.robot_motion_done == 1 and
+                        self._isInPosition(posList=[x_trans_mm,y_trans_mm,z_trans_mm,xRot_angle,yRot_angle,zRot_angle])):
                     break
                 else:
                     count_motion_done += 1
@@ -1890,11 +1911,13 @@ class FuncFrRos2(Node):
     # 30
     def StopMotion(self):
         try:
+            #停止运动信号
+            self.stopMotion_flag =True
             # 定义命令
             cmd_str = ("StopMotion("  + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(113001, "StopMotion指令错误，fr_ros2 service超时，检查网络")
@@ -1902,10 +1925,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future,timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future,timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res !='1' and result.cmd_res !='0':
+            if  result.cmd_res !='0':
                 self.err_log.append_err(113002, "StopMotion指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
             return True
@@ -1925,7 +1948,7 @@ class FuncFrRos2(Node):
             cmd_str = ("RobotEnable(" + str(state) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(113201, "RobotEnable指令错误，fr_ros2 service超时，检查网络")
@@ -1933,10 +1956,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' :
+            if result.cmd_res != '0' :
                 self.err_log.append_err(113202,
                                         "RobotEnable指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -1959,7 +1982,7 @@ class FuncFrRos2(Node):
             cmd_str = ("Mode(" + str(state) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=2.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(113301, "Mode指令错误，fr_ros2 service超时，检查网络")
@@ -1967,10 +1990,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res != '0' :
                 self.err_log.append_err(113302,
                                         "Mode指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -1993,7 +2016,7 @@ class FuncFrRos2(Node):
             cmd_str = ("SetSpeed(" + str(vel) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=2.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(113401, "SetSpeed指令错误，fr_ros2 service超时，检查网络")
@@ -2001,10 +2024,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if  result.cmd_res !='0':
                 self.err_log.append_err(113402,
                                         "SetSpeed指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2030,7 +2053,7 @@ class FuncFrRos2(Node):
             cmd_str = ("SetLoadWeight(" + str(weight) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(113501, "SetLoadWeight指令错误，fr_ros2 service超时，检查网络")
@@ -2038,10 +2061,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(113502,
                                         "SetLoadWeight指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2063,7 +2086,7 @@ class FuncFrRos2(Node):
             cmd_str = ("SetLoadCoord(" + str(x) + "," + str(y) + "," + str(z) + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=3.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(113601, "SetLoadCoord指令错误，fr_ros2 service超时，检查网络")
@@ -2071,10 +2094,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(113602,
                                         "SetLoadCoord指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2104,10 +2127,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(113702,
                                         "SetRobotInstallPos指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2138,10 +2161,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(113802,
                                         "SetRobotInstallAngle指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2172,10 +2195,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(113902,
                                         "SetAnticollision指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2205,10 +2228,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114002,
                                         "SetCollisionStrategy指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2240,10 +2263,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114102,
                                         "SetLimitPositive指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2275,10 +2298,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114202,
                                         "SetLimitNegative指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2300,7 +2323,7 @@ class FuncFrRos2(Node):
             cmd_str = ("ResetAllError(" + ')')
             self.req.cmd_str = cmd_str
             # 等待服务器响应
-            if not self.cli.wait_for_service(timeout_sec=5.0):
+            if not self.cli.wait_for_service(timeout_sec=2.0):
                 print('service not available, waiting again...')
                 # 服务器超时未响应，返回报错
                 self.err_log.append_err(114301, "ResetAllError指令错误，fr_ros2 service超时，检查网络")
@@ -2308,20 +2331,44 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114302,
                                         "ResetAllError指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
-
             return True
-
         except Exception as e:
             # 处理特定异常的代码
             print("ResetAllError指令错误，请检查参数")
             self.err_log.append_err(114303, "ResetAllError指令错误"+str(e))
+            return False
+
+    # 函数功能描述:启动
+    # 43
+    def Start(self):
+        try:
+            # 停止运动成功后 关闭停止运动信号
+            self.stopMotion_flag = False
+            return True
+        except Exception as e:
+            # 处理特定异常的代码
+            print("Start 指令错误，请检查参数")
+            self.err_log.append_err(114303, "Start 指令错误" + str(e))
+            return False
+
+    # 函数功能描述:暂停
+    # 43
+    def Pause(self):
+        try:
+            # 停止运动成功 标志位
+            self.stopMotion_flag = True
+            return True
+        except Exception as e:
+            # 处理特定异常的代码
+            print("Pause 指令错误，请检查参数")
+            self.err_log.append_err(114303, "Pause 指令错误" + str(e))
             return False
 
     #外设控制
@@ -2343,16 +2390,14 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114402,
                                         "ActGripper指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
-
             return True
-
         except Exception as e:
             # 处理特定异常的代码
             print("ActGripper指令错误，请检查参数")
@@ -2377,16 +2422,14 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114502,
                                         "MoveGripper指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
-
             return True
-
         except Exception as e:
             # 处理特定异常的代码
             print("MoveGripper指令错误，请检查参数")
@@ -2412,10 +2455,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114602,
                                         "SetDO指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2446,10 +2489,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114702,
                                         "SetToolDO指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2480,10 +2523,10 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114802,
                                         "SetAO指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
@@ -2514,18 +2557,46 @@ class FuncFrRos2(Node):
             # 发送请求
             future = self.cli.call_async(self.req)
             # 等待返回预期
-            rclpy.spin_until_future_complete(self, future, timeout_sec=1000)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=3.0)
             # 获取结果
             result = future.result()
-            if result.cmd_res != '1' and result.cmd_res !='0':
+            if result.cmd_res !='0':
                 self.err_log.append_err(114902,
                                         "SetToolAO指令错误，service返回结果错误，检查fr service服务端是否正常返回结果")
                 return False
 
             return True
-
         except Exception as e :
             # 处理特定异常的代码
             print("SetToolAO指令错误，请检查参数")
             self.err_log.append_err(114903, "SetToolAO指令错误:"+str(e))
             return False
+
+    #判断是否到了目标位置
+    def _isInPosition(self, joints=None, posList=None,dis_err=2.0,angle_err=2.0):
+        if posList is None:
+            posList = []
+        if joints is None:
+            joints = []
+        #角度判断
+        if len(joints)>0 and len(posList)==0:
+            j1_err = math.fabs(self.fr_state.fr_state_msg.j1_cur_pos - joints[0]) > angle_err
+            j2_err = math.fabs(self.fr_state.fr_state_msg.j2_cur_pos - joints[1]) > angle_err
+            j3_err = math.fabs(self.fr_state.fr_state_msg.j3_cur_pos - joints[2]) > angle_err
+            j4_err = math.fabs(self.fr_state.fr_state_msg.j4_cur_pos - joints[3]) > angle_err
+            j5_err = math.fabs(self.fr_state.fr_state_msg.j5_cur_pos - joints[4]) > angle_err
+            j6_err = math.fabs(self.fr_state.fr_state_msg.j6_cur_pos - joints[5]) > angle_err
+            return not (j1_err or j2_err or j3_err or j4_err or j5_err or j6_err)
+            pass
+        #判断位置
+        elif len(joints)==0 and len(posList)>0:
+            x_err = math.fabs(self.fr_state.fr_state_msg.cart_x_cur_pos - posList[0]) > dis_err
+            y_err = math.fabs(self.fr_state.fr_state_msg.cart_y_cur_pos - posList[1]) > dis_err
+            z_err = math.fabs(self.fr_state.fr_state_msg.cart_z_cur_pos - posList[2]) > dis_err
+            xRot_err = math.fabs(self.fr_state.fr_state_msg.cart_a_cur_pos - posList[3]) > angle_err
+            yRot_err = math.fabs(self.fr_state.fr_state_msg.cart_b_cur_pos - posList[4]) > angle_err
+            zRot_err = math.fabs(self.fr_state.fr_state_msg.cart_c_cur_pos - posList[5]) > angle_err
+            return not (x_err or y_err or z_err or xRot_err or yRot_err or zRot_err)
+            pass
+        else:
+            self.err_log.append_err(114903, "_isInPosition指令错误:只能判断角度或位姿的一种，请输入单个参数")

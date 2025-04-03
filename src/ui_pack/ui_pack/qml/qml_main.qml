@@ -4,13 +4,6 @@ import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 
-//ApplicationWindow {
-//    id: main_window  //主窗体
-//    visible: true
-//    width: 1080   //主窗体默认宽度
-//    height: 760  //主窗体默认高度
-//    title: qsTr("YWF robot")
-//    property string language_current: "中文简体"
 
 Rectangle
 {
@@ -51,12 +44,6 @@ Rectangle
                 width: parent.width
                 height: main_rect.height*0.1
                 color:"#21252d"  //初始设置为主页
-                //anchors.top: parent.top
-                //anchors.topMargin: 5
-                //anchors.left: parent.left
-                //anchors.leftMargin: 5
-                //anchors.right:parent.right
-                //anchors.rightMargin: 5
                 imageSourcePath:"svg_icons/icon_menu_close.svg"
                 property bool visible_status:true
                 // 重构鼠标事件
@@ -77,7 +64,7 @@ Rectangle
                             btn_home_menu.visible_textBtn=false  //隐藏主页菜单文字
                             btn_manuel_menu.visible_textBtn=false  //隐藏手动菜单文字
                             btn_dataSet_menu.visible_textBtn=false //数据设置隐藏文字
-                            btn_config_menu.visible_textBtn=false  //隐藏参数配置菜单文字
+                            btn_processConfig_menu.visible_textBtn=false  //隐藏参数配置菜单文字
                             btn_login_menu.visible_textBtn=false
                             btn_information_menu.visible_textBtn=false
                             console.log("隐藏主页")
@@ -93,7 +80,7 @@ Rectangle
                             btn_home_menu.visible_textBtn=true  //显示主页菜单文字
                             btn_manuel_menu.visible_textBtn=true  //显示手动菜单文字
                             btn_dataSet_menu.visible_textBtn=true //数据设置隐藏文字
-                            btn_config_menu.visible_textBtn=true  //显示参数配置菜单文字
+                            btn_processConfig_menu.visible_textBtn=true  //显示参数配置菜单文字
                             btn_login_menu.visible_textBtn=true
                             btn_information_menu.visible_textBtn=true
                             console.log("显示主页")
@@ -107,15 +94,6 @@ Rectangle
                 id: btn_home_menu
                 width: parent.width
                 height: menu_rect.height*0.1
-                //anchors.top: btn_hide_menu.bottom
-                //anchors.topMargin: 10
-                //anchors.left: parent.left
-                //anchors.leftMargin: 5
-                //anchors.right: parent.right
-                //anchors.rightMargin: 5
-
-                //widthRect: column_menu.width
-                //heightRect: column_menu.height*0.2
                 buttonText: "主页" // 设置按钮文本为 "1"
                 color:"#2c313c"  //初始设置为主页
                 imageSourcePath:"svg_icons/icon_home.svg"
@@ -129,11 +107,12 @@ Rectangle
                         btn_home_menu.color="#2c313c"
                         btn_manuel_menu.color="#1b1e23"
                         btn_dataSet_menu.color="#1b1e23"
-                        btn_config_menu.color="#1b1e23"
+                        btn_processConfig_menu.color="#1b1e23"
                         btn_login_menu.color="#1b1e23"
                         //console.log("主页")
-
                         stackLayout_win.currentIndex=0
+                        //界面监控IO关闭
+                        signal_IoSetSwitch(false)
                     }
                 }
             }
@@ -144,14 +123,6 @@ Rectangle
                 id: btn_manuel_menu
                 width: parent.width
                 height: menu_rect.height*0.1
-                //anchors.top: btn_home_menu.bottom
-                //anchors.topMargin: 10
-                //anchors.left: parent.left
-                //anchors.leftMargin: 5
-                //anchors.right: parent.right
-                //anchors.rightMargin: 5
-                //widthRect: column_menu.width
-                //heightRect: column_menu.height*0.2
                 buttonText: "手动" // 设置按钮文本为 "1"
                 imageSourcePath:"svg_icons/icon_widgets.svg"
                 MouseArea   //鼠标事件
@@ -163,10 +134,12 @@ Rectangle
                         btn_home_menu.color="#1b1e23"
                         btn_manuel_menu.color="#2c313c"
                         btn_dataSet_menu.color="#1b1e23"
-                        btn_config_menu.color="#1b1e23"
+                        btn_processConfig_menu.color="#1b1e23"
                         btn_login_menu.color="#1b1e23"
                         stackLayout_win.currentIndex=1
                         //console.log("手动")
+                        //界面监控IO开始
+                        signal_IoSetSwitch(true)
                     }
                 }
             }
@@ -188,10 +161,12 @@ Rectangle
                         btn_home_menu.color="#1b1e23"
                         btn_manuel_menu.color="#1b1e23"
                         btn_dataSet_menu.color="#2c313c"
-                        btn_config_menu.color="#1b1e23"
+                        btn_processConfig_menu.color="#1b1e23"
                         btn_login_menu.color="#1b1e23"
                         stackLayout_win.currentIndex=2
                         //console.log("配置参数")
+                        //界面监控IO关闭
+                        signal_IoSetSwitch(false)
                     }
                 }
             }
@@ -199,18 +174,10 @@ Rectangle
 
             MyButton  //配置按钮
             {
-                id: btn_config_menu
+                id: btn_processConfig_menu
                 width: parent.width
                 height: menu_rect.height*0.1
-                //anchors.top: btn_manuel_menu.bottom
-                //anchors.topMargin: 10
-                //anchors.left: parent.left
-                //anchors.leftMargin: 5
-                //anchors.right: parent.right
-                //anchors.rightMargin: 5
-                //widthRect: column_menu.width
-                //heightRect: column_menu.height*0.2
-                buttonText: "参数" // 设置按钮文本为 "1"
+                buttonText: "工艺参数" // 设置按钮文本为 "1"
                 imageSourcePath:"svg_icons/icon_settings.svg"
                 MouseArea   //鼠标事件
                 {
@@ -221,10 +188,12 @@ Rectangle
                         btn_home_menu.color="#1b1e23"
                         btn_manuel_menu.color="#1b1e23"
                         btn_dataSet_menu.color="#1b1e23"
-                        btn_config_menu.color="#2c313c"
+                        btn_processConfig_menu.color="#2c313c"
                         btn_login_menu.color="#1b1e23"
                         stackLayout_win.currentIndex=3
                         //console.log("配置参数")
+                        //界面监控IO关闭
+                        signal_IoSetSwitch(false)
                     }
                 }
             }
@@ -236,12 +205,6 @@ Rectangle
                 width: parent.width
                 height: menu_rect.height*0.1
                 buttonText: "用户权限" // 设置按钮文本为 "1"
-                //anchors.top: btn_config_menu.bottom
-                //anchors.topMargin: 10
-                //anchors.left: parent.left
-                //anchors.leftMargin: 5
-                //anchors.right: parent.right
-                //anchors.rightMargin: 5
                 imageSourcePath:"svg_icons/icon_add_user.svg"
                 MouseArea   //鼠标事件
                 {
@@ -252,10 +215,12 @@ Rectangle
                         btn_home_menu.color="#1b1e23"
                         btn_manuel_menu.color="#1b1e23"
                         btn_dataSet_menu.color="#1b1e23"
-                        btn_config_menu.color="#1b1e23"
+                        btn_processConfig_menu.color="#1b1e23"
                         btn_login_menu.color="#2c313c"
                         stackLayout_win.currentIndex=4
                         //console.log("配置参数")
+                        //界面监控IO关闭
+                        signal_IoSetSwitch(false)
                     }
                 }
             }
@@ -332,7 +297,7 @@ Rectangle
         //功能窗口按钮
         MyButtonIcon
         {
-            id: btn_function_panel
+            id: btn_frRobot_panel
             widthRect: 35
             heightRect: parent.height*0.8
             z:90
@@ -349,26 +314,28 @@ Rectangle
                 hoverEnabled: true // 设置为true以启用悬停事件
                 onEntered: {
                     // 鼠标进入区域时，按钮颜色变化
-                    btn_function_panel.color = "#2c313c"
+                    btn_frRobot_panel.color = "#2c313c"
                     console.log("mouseIn")
                 }
                 onExited: {
                     // 鼠标进入区域时，按钮颜色变化
-                    btn_function_panel.color = "#3c4454"
+                    btn_frRobot_panel.color = "#3c4454"
                 }
 
                 onClicked: {
                     // 按钮点击处理逻辑
-                    if(function_panel.visible)
+                    if(frRobot_panel.visible)
                     {
-                        btn_function_panel.color="#2c313c"
-                        function_panel.visible=false
+                        btn_frRobot_panel.color="#2c313c"
+                        frRobot_panel.visible=false
+                        signal_robotManuelSwitch(false)
 
                     }
                     else
                     {
-                        btn_function_panel.color="#1b1e23"
-                        function_panel.visible=true
+                        btn_frRobot_panel.color="#1b1e23"
+                        frRobot_panel.visible=true
+                        signal_robotManuelSwitch(true)
                     }
 
                 }
@@ -515,7 +482,6 @@ Rectangle
             color: "red" // 字体颜色为红色
             verticalAlignment: Text.AlignVCenter
             Layout.fillWidth: true
-
         }
     }
 
@@ -846,7 +812,7 @@ Rectangle
                                 btn_robotPoint_rect.color="#2c313c"
                                 btn_robotTool_rect.color="#1b1e23"
                                 btn_robotUser_rect.color="#1b1e23"
-                                btn_cameraParam_rect.color="#1b1e23"
+                                //btn_cameraParam_rect.color="#1b1e23"
                                 dataSet_StackLayout.currentIndex=0
 
                             }
@@ -870,7 +836,7 @@ Rectangle
                                 btn_robotTool_rect.color="#2c313c"
                                 btn_robotPoint_rect.color="#1b1e23"
                                 btn_robotUser_rect.color="#1b1e23"
-                                btn_cameraParam_rect.color="#1b1e23"
+                                //btn_cameraParam_rect.color="#1b1e23"
                                 dataSet_StackLayout.currentIndex=1
                             }
                         }
@@ -892,34 +858,12 @@ Rectangle
                                 btn_robotTool_rect.color="#1b1e23"
                                 btn_robotPoint_rect.color="#1b1e23"
                                 btn_robotUser_rect.color="#2c313c"
-                                btn_cameraParam_rect.color="#1b1e23"
+                                //btn_cameraParam_rect.color="#1b1e23"
                                 dataSet_StackLayout.currentIndex=2
                             }
                         }
                     }
 
-                    //相机调试界面
-                    MyButton
-                    {
-                        id:btn_cameraParam_rect
-                        width: 150
-                        height: 50
-
-                        buttonText: "相机参数"
-                        imageSourcePath:"svg_icons/robot.jpg"
-                        MouseArea   //鼠标事件
-                        {
-                            anchors.fill: parent
-                            onClicked: {
-                                // 按钮点击处理逻辑
-                                btn_robotTool_rect.color="#1b1e23"
-                                btn_robotPoint_rect.color="#1b1e23"
-                                btn_robotUser_rect.color="#1b1e23"
-                                btn_cameraParam_rect.color="#2c313c"
-                                dataSet_StackLayout.currentIndex=3
-                            }
-                        }
-                    }
                 }
 
                 //抽屉表格
@@ -954,13 +898,68 @@ Rectangle
                 }
             }
 
-            //配置窗体
+            //工艺参数窗体
             Rectangle {
-                id: win_config
+                id: win_processConfig
                 color: "#3c4454"
                 radius: 10
                 width: parent.width
                 height: parent.height
+                property list<string> button_process_names:["码垛工艺","堆叠工艺","打磨工艺","视觉引导抓取"]
+                Grid {
+                    anchors.centerIn: parent
+                    columns: 3 // 设置 3 列
+                    spacing: 50 // 间距 5px
+                    //子元素自动按网格排列
+                    Repeater {
+                        model: 4 // 创建 9 个子项
+                        //信息按钮
+                        MyButton
+                        {
+                            id: process_select_btn
+                            color:"#1b1e23"
+                            width: 150
+                            height: 60
+                            buttonText: win_processConfig.button_process_names[index] // 设置按钮文本为 "1"
+                            imageSourcePath:"svg_icons/processButton"+index+".jpg"
+                            MouseArea   //鼠标事件
+                            {
+                                anchors.fill: parent
+                                onPressed: {
+                                    process_select_btn.color = "#dce1ec"
+                                }
+                                onReleased: {
+                                    process_select_btn.color = "#1b1e23"
+                                }
+                                onClicked: {
+                                    if(index==0)   //打开码垛工艺包
+                                    {
+                                        palletProcess.visible=true
+                                    }
+                                    else if(index==1)
+                                    {
+
+                                    }
+                                    else if(index==2)
+                                    {
+
+                                    }
+                                    else if(index==2)
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //码垛工艺包窗口
+                PalletizingProcess{
+                    id: palletProcess
+                    visible:false
+                    anchors.fill: parent
+                }
+
             }
 
             //用户权限窗体
@@ -976,41 +975,13 @@ Rectangle
         //功能面板
         Rectangle
         {
-            id: function_panel
+            id: frRobot_panel
             height: rect_mainContainer.height
             width: rect_mainContainer.width*4/5
             radius: 10  //圆角半径
             anchors.right: parent.right
             color: "#343b48"
             visible: false
-
-            //标题框
-//            Rectangle
-//            {
-//                id: function_panel_title
-//                //width: parent.width*0.8
-//                height: parent.height*0.05
-//                anchors.top: parent.top
-//                anchors.topMargin: 10
-//                anchors.left: parent.left
-//                anchors.leftMargin: 5
-//                anchors.right: parent.right
-//                anchors.rightMargin: 5
-//                radius:10
-//                color: "#3c4454"
-//                // 文字部分
-//                Text
-//                 {
-//                    text: "机器人手动"  // 绑定到外部传入的属性
-//                    font.pointSize: 10
-//                    color: "#c3ccdf" // 字体颜色为白色
-//                    // 设置锚点使其垂直居中
-//                    anchors.left: parent.left
-//                    anchors.leftMargin: 15
-//                    anchors.verticalCenter: parent.verticalCenter
-//                    Layout.fillWidth: true
-//                }
-//            }
 
             //机器人手动
             RobotManual{
@@ -1189,6 +1160,11 @@ Rectangle
         //robot manual
         signal_obj.signal_update_IO_state_robotDIO.connect(robotIoSet_win.update_IO_state)
 
+        //码垛工艺包 回馈信号
+        signal_obj.signal_insert_newPalletProcess_callback.connect(palletProcess.insertNewParamPalletProcessToTM)
+        signal_obj.signal_appendParam_palletProcess_callback.connect(palletProcess.appendParamPalletProcess)
+        signal_obj.signal_sendToolUserPointNames_callback.connect(palletProcess.getToolUserPointNames_callback)
+
         //robot_manual信号绑定到主信号
         robot_manual.signal_test.connect(mySignal)  //测试
         robot_manual.signal_StartJOG.connect(signal_StartJOG_main)  //点动开始信号
@@ -1244,6 +1220,14 @@ Rectangle
         robotIoSet_win.signal_SetDO.connect(signal_SetDO_RobotIoSet_main)
         //robot tag更新
         robotIoSet_win.signal_update_RobotDIO_tag.connect(signal_update_RobotDIO_tag_main)
+
+        //码垛工艺包 信号绑定
+        //插入新的 码垛工艺包
+        palletProcess.signal_insert_newPalletProcess.connect(signal_insert_newPalletProcess_main)
+        palletProcess.signal_refreshData_PalletProcess.connect(signal_refreshData_PalletProcess_main)
+        palletProcess.signal_deleteDbRow_palletProcess.connect(signal_deleteDbRow_palletProcess_main)
+        palletProcess.signal_updateDbRow_palletProcess.connect(signal_updateDbRow_palletProcess_main)
+        palletProcess.signal_getTool_User_PointNameToLoadCombox.connect(signal_getTool_User_PointNameToLoadCombox_main)
     }
 
     //启动暂停回调函数
@@ -1309,10 +1293,14 @@ Rectangle
         }
     }
 
-    //定义信号
+    //主控定义信号
     signal signal_manuel_auto_switch(bool mode)
     signal signal_start_pause_switch(bool mode)
     signal signal_clear_errorList()
+    //打开关闭fr_robotManuel监控
+    signal signal_robotManuelSwitch(bool _switch)
+    //打开关闭RobotIoSetSwitch
+    signal signal_IoSetSwitch(bool _switch)
 
     //robotManual信号绑定 mainQML信号
     signal mySignal()
@@ -1331,6 +1319,7 @@ Rectangle
     signal signal_robotEnable_main(int state_robot)
     //改变robot速度值
     signal signal_robotSpeed_main(double speed_val)
+
 
     //robot点表qml信号绑定
     //删除
@@ -1386,6 +1375,18 @@ Rectangle
     signal signal_SetDO_RobotIoSet_main(int id_, int status_)
     //更新输入输出标签Robot tag
     signal signal_update_RobotDIO_tag_main(string type_,string id_,string tag_)
+
+    //palletProcess码垛工艺包
+    //增
+    signal signal_insert_newPalletProcess_main(string name_str)
+    //刷新palletProcess数据到界面显示
+    signal signal_refreshData_PalletProcess_main()
+    //删除行
+    signal signal_deleteDbRow_palletProcess_main(string name_str)
+    //更新
+    signal signal_updateDbRow_palletProcess_main(string name_str,list<string> str_list)
+    //发送 获取 工具 用户名称信号 并回调
+    signal signal_getTool_User_PointNameToLoadCombox_main()
 
 }
 

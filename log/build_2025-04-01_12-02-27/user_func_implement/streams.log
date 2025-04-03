@@ -1,0 +1,24 @@
+[3.363s] Invoking command in '/home/st/py_ywfbot_ws_v1.1/src/user_func_implement': PYTHONPATH=/home/st/py_ywfbot_ws_v1.1/build/user_func_implement/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/st/py_ywfbot_ws_v1.1/install/user_func_implement/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/user_func_implement build --build-base /home/st/py_ywfbot_ws_v1.1/build/user_func_implement/build install --record /home/st/py_ywfbot_ws_v1.1/build/user_func_implement/install.log --single-version-externally-managed install_data
+[4.184s] running egg_info
+[4.184s] writing ../../build/user_func_implement/user_func_implement.egg-info/PKG-INFO
+[4.184s] writing dependency_links to ../../build/user_func_implement/user_func_implement.egg-info/dependency_links.txt
+[4.184s] writing entry points to ../../build/user_func_implement/user_func_implement.egg-info/entry_points.txt
+[4.184s] writing requirements to ../../build/user_func_implement/user_func_implement.egg-info/requires.txt
+[4.185s] writing top-level names to ../../build/user_func_implement/user_func_implement.egg-info/top_level.txt
+[4.192s] reading manifest file '../../build/user_func_implement/user_func_implement.egg-info/SOURCES.txt'
+[4.197s] adding license file 'LICENSE'
+[4.197s] writing manifest file '../../build/user_func_implement/user_func_implement.egg-info/SOURCES.txt'
+[4.198s] running build
+[4.198s] running build_py
+[4.209s] copying user_func_implement/sqlite/palletizingProcess.db -> /home/st/py_ywfbot_ws_v1.1/build/user_func_implement/build/lib/user_func_implement/sqlite
+[4.209s] running install
+[4.209s] running install_lib
+[4.212s] copying /home/st/py_ywfbot_ws_v1.1/build/user_func_implement/build/lib/user_func_implement/sqlite/palletizingProcess.db -> /home/st/py_ywfbot_ws_v1.1/install/user_func_implement/lib/python3.10/site-packages/user_func_implement/sqlite
+[4.215s] running install_data
+[4.215s] running install_egg_info
+[4.234s] removing '/home/st/py_ywfbot_ws_v1.1/install/user_func_implement/lib/python3.10/site-packages/user_func_implement-0.0.0-py3.10.egg-info' (and everything under it)
+[4.234s] Copying ../../build/user_func_implement/user_func_implement.egg-info to /home/st/py_ywfbot_ws_v1.1/install/user_func_implement/lib/python3.10/site-packages/user_func_implement-0.0.0-py3.10.egg-info
+[4.235s] running install_scripts
+[4.281s] Installing user_func_main script to /home/st/py_ywfbot_ws_v1.1/install/user_func_implement/lib/user_func_implement
+[4.284s] writing list of installed files to '/home/st/py_ywfbot_ws_v1.1/build/user_func_implement/install.log'
+[4.339s] Invoked command in '/home/st/py_ywfbot_ws_v1.1/src/user_func_implement' returned '0': PYTHONPATH=/home/st/py_ywfbot_ws_v1.1/build/user_func_implement/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/st/py_ywfbot_ws_v1.1/install/user_func_implement/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/user_func_implement build --build-base /home/st/py_ywfbot_ws_v1.1/build/user_func_implement/build install --record /home/st/py_ywfbot_ws_v1.1/build/user_func_implement/install.log --single-version-externally-managed install_data
